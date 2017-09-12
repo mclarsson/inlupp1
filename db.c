@@ -146,10 +146,9 @@ char ask_question_menu()
   
   do {
     // Ask for c while c is not in menu_items
-    c = fgetc(stdin);
+    c = ask_question_char("Vad vill du göra?");
   } while (strchr(menu_items, c) == NULL);
 
-  clear_input_buffer();
   return toupper(c);
 }
 

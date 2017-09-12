@@ -131,7 +131,8 @@ answer_t ask_question(char *question, check_func check, convert_func convert)
   do{
     puts(question);
     length = read_string(str, str_size);
-  }while(!(check(str) && length > 0));
+    
+  } while(!(check(str) && length > 0));
   
   return convert(str);
     
@@ -164,15 +165,6 @@ double ask_question_float(char *question)
  */
 char *ask_question_string(char *question/*, char *buf, int buf_siz*/)
 {
-  /*
-  int length = 0;
-  do {
-    puts(question);
-    length = read_string(buf, buf_siz);
-  } while (length == 0);
-
-  return strdup(buf);
-  */
   return ask_question(question, not_empty, (convert_func) strdup).s;
 }
 
@@ -194,9 +186,20 @@ bool is_shelf(char *str)
   }
 }
 
+/**
+ * ask_question_shelf
+ */
 char *ask_question_shelf(char *question)
 {
   return ask_question(question, is_shelf, (convert_func) strdup).s;
+}
+
+char ask_question_char(char *question)
+{
+  puts(question);
+  char c = fgetc(stdin);
+  clear_input_buffer();
+  return c;
 }
 
 /**
