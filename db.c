@@ -152,10 +152,31 @@ char ask_question_menu()
   return toupper(c);
 }
 
+bool shelf_in_use(item_t *new, item_t *db, int db_siz)
+{
+  for(int i=0;i<db_siz;i++)
+    {
+      if(db[db_siz].shelf == new->shelf && db[db_siz].name != new->name)
+	{
+	  return true;
+	}
+    }
+  return false;
+}
+
 int add_item_to_db(item_t *db, int db_siz)
 {
-  db[db_siz] = input_item();
-  return db_siz + 1;
+  item_t temp_item = input_item();
+  if(shelf_in_use(&temp_item, db, db_siz))
+    {
+      puts("Hyllan är redan ockuperad av en annan vara");
+      return db_siz;
+    }
+  else
+    {
+      db[db_siz] = temp_item;
+      return db_siz + 1;
+    }
 }
 
 int remove_item_from_db(item_t *db, int db_siz)
