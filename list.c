@@ -5,9 +5,7 @@
 
 #include "list.h"
 
-typedef struct list list_t;
 typedef struct link link_t;
-typedef int L;
 
 struct list {
   link_t *first;
