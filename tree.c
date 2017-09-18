@@ -207,16 +207,9 @@ bool tree_insert(tree_t *tree, K key, T elem)
 /// \returns: true if key is a key in tree
 bool look_for_key(node_t *node, K key)
 {
-  if (node->left == NULL && node->right == NULL)
-    {
-      return key_matches(node->key, key);
-    }
-  else
-    {
-      bool l = node->left == NULL ? false : look_for_key(node->left, key);
-      bool r = node->right == NULL ? false : look_for_key(node->right, key);
-      return key_matches(node->key, key) || l || r;
-    }
+  bool l = node->left == NULL ? false : look_for_key(node->left, key);
+  bool r = node->right == NULL ? false : look_for_key(node->right, key);
+  return key_matches(node->key, key) || l || r;
 }
 
 /// Checks whether a key is used in a tree
