@@ -2,6 +2,7 @@
 #define __tree_h__
 
 #include <stdbool.h>
+#include "list.h"
 
 /// Define struct tree in your .c file not here! (why?)
 typedef struct tree tree_t;
@@ -12,7 +13,7 @@ typedef char *K;
 /// Change this definition and replace int with the appropriate type
 /// in your program. Note, however, that your implementation of list.c
 /// should treat T as if it did not know the type.
-typedef int T;
+typedef list_t T;
 
 /// \file tree.h
 ///

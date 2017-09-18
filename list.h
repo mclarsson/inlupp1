@@ -6,13 +6,14 @@
 #define __list_h__
 
 #include <stdbool.h>
+#include "db.c"
 
 /// Define struct list in your .c file not here! (why?)
 typedef struct list list_t;
 
 /// Change this definition and replace int with the appropriate type
 /// in your program. 
-typedef int L;
+typedef item_t L;
 
 /// \file list.h
 ///
