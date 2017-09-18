@@ -200,7 +200,7 @@ bool tree_insert(tree_t *tree, K key, T elem)
     }
 }
 
-/// Helper for tree_has_key
+/// Helper for tree_has_key TODO
 ///
 /// \param tree pointer to the tree
 /// \param key the key of elem to be removed
@@ -215,7 +215,7 @@ bool look_for_key(node_t *node, K key)
     {
       bool l = node->left == NULL ? false : look_for_key(node->left, key);
       bool r = node->right == NULL ? false : look_for_key(node->right, key);
-      return l || r;
+      return key_matches(node->key, key) || l || r;
     }
 }
 
