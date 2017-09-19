@@ -3,7 +3,9 @@
 #include <string.h>
 #include <stdlib.h>
 #include <time.h>
+
 #include "utils.h"
+#include "tree.h"
 
 //
 // Types
@@ -66,93 +68,6 @@ item_t input_item()
   return make_item(name, description, price, amount, shelf);
 }
 
-char *magick(char *a1[], char *a2[], char *a3[], int length)
-{
-  char buf[255];
-  int c = 0;
-  
-  int r = random() % length;
-  char *s = a1[r];
-  for (int i = 0; i < strlen(s); i++, c++) {
-    buf[c] = s[i];
-  }
-
-  buf[c++] = '-';
-  
-  r = random() % length;
-  s = a2[r];
-  for (int i = 0; i < strlen(s); i++, c++) {
-    buf[c] = s[i];
-  }
-  
-  buf[c++] = ' ';
-  
-  r = random() % length;
-  s = a3[r];
-  for (int i = 0; i < strlen(s); i++, c++) {
-    buf[c] = s[i];
-  }
-  
-  buf[c] = '\0';
-  
-  return strdup(buf);
-}
-
-void list_db(item_t *items, int no_items)
-{
-  for (int i = 0; i < no_items; i++) {
-    printf("%d.\t%s \n", i + 1, items[i].name);
-  }
-}
-
-int request_index(int db_siz)
-{
-  int i = -1;
-  do {
-    printf("Enter an index between %d and %d\n", 1, db_siz);
-    i = ask_question_int("Index:");
-  } while(!(i > 0 && i <= db_siz));
-
-  // user enters listed index
-  i--;
-  
-  return i;
-}
-
-void edit_db(item_t *db, int db_siz)
-{
-  int i = request_index(db_siz);
-  
-  print_item(&db[i]);
-  item_t it = input_item();
-  db[i] = it;
-}
-
-void print_menu()
-{
-  fputs("[L]ägga till en vara\n", stdout);
-  fputs("[T]a bort en vara \n", stdout);
-  fputs("[R]edigera en vara\n", stdout);
-  fputs("Ån[g]ra senaste ändringen\n", stdout);
-  fputs("Lista [h]ela varukatalogen\n", stdout);
-  fputs("[A]vsluta\n", stdout);
-}
-
-char ask_question_menu()
-{
-  print_menu();
-
-  char menu_items[] = "LlTtRrGgHhAa";
-  char c;
-  
-  do {
-    // Ask for c while c is not in menu_items
-    c = ask_question_char("Vad vill du göra?");
-  } while (strchr(menu_items, c) == NULL);
-
-  return toupper(c);
-}
-
 bool shelf_in_use(item_t *new, item_t *db, int db_siz)
 {
   for(int i=0;i<db_siz;i++)
@@ -165,76 +80,7 @@ bool shelf_in_use(item_t *new, item_t *db, int db_siz)
   return false;
 }
 
-int add_item_to_db(item_t *db, int db_siz)
+void display_goods(tree_t *tree)
 {
-  item_t temp_item = input_item();
-  if(shelf_in_use(&temp_item, db, db_siz))
-    {
-      puts("Hyllan är redan ockuperad av en annan vara");
-      return db_siz;
-    }
-  else
-    {
-      db[db_siz] = temp_item;
-      return db_siz + 1;
-    }
-}
-
-int remove_item_from_db(item_t *db, int db_siz)
-{
-  list_db(db, db_siz);
-  int index = request_index(db_siz);
-
-  item_t cur, prev = db[db_siz - 1];
-  for (int i = db_siz - 2; i >= index; i--) {
-    cur = db[i];
-    db[i] = prev;
-    prev = cur;
-  }
-
-  return db_siz - 1;
-}
-
-int event_loop(item_t *db, int db_siz)
-{
-  char input;
-  int org_size = db_siz;
-  do {
-
-    input = ask_question_menu();
-
-    // TODO
-    if (db_siz > org_size) {
-      db_siz = org_size;
-    }
-    
-    switch (input)
-      {
-      case 'L':
-	db_siz = add_item_to_db(db, db_siz);
-	break;
-	
-      case 'T':
-	db_siz = remove_item_from_db(db, db_siz);
-	break;
-
-      case 'R':
-	edit_db(db, db_siz);
-	break;
-	
-      case 'G':
-	fputs("Not yet implemented! \n", stdout);
-	break;
-	
-      case 'H':
-	list_db(db, db_siz);
-	break;
-      default:
-	puts("INPUT ERROR");
-	break;
-      }
-    
-  } while (input != 'A');
-
-  return 0;
+  return;
 }
