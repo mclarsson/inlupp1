@@ -84,3 +84,104 @@ void display_goods(tree_t *tree)
 {
   return;
 }
+
+/*
+item_t input_existing_item(char *name, char *description, int price)
+{
+  
+  char item_name[255];
+  char item_description[255];
+  int item_price;
+  char shelf[255];
+  int amount;
+  
+  strcpy(item_name, name);
+  strcpy(item_description, description);
+  item_price = price;
+  strcpy(shelf, ask_question_shelf("Enter shelf:") );
+  amount = ask_question_int("Enter amount:");
+  
+  return make_item(item_name, item_description, item_price, amount, shelf);
+}
+
+void remove_goods(tree_t *tree)
+{
+  return;
+}
+
+void edit_goods(tree_t *tree)
+{
+  char name = "test";
+  
+  list_t list = tree_get(tree, name);
+  
+  for(int i = 0; i < list_length(list); i++)
+    {
+      
+      char input = ask_question_edit_menu();
+      item_t tmp_item = list_get(list, i);
+      
+      switch(input)
+	{	  
+	case 'B':
+	  printf("Nuvarande beskrivning: %s", tmp_item->description);
+	  char tmp_info = ask_question_string("Vad vill du ändra beskrivningen till?");
+	  tmp_item->description = tmp_info;
+	  break;
+
+	case 'P':
+	  printf("Nuvarande pris: %d", tmp_item->price);
+	  int tmp_info = ask_question_int("Vad vill du ändra priset till?");
+	  tmp_item->price = tmp_info;
+	  break;
+
+	case 'L':
+	  printf("Nuvarande lagerhylla: %s", tmp_item->shelf);
+	  char tmp_info = ask_question_shelf("Vad vill du ängra lagerhyllan till?");
+	  tmp_item->shelf = tmp_info;
+	  break;
+
+	case 'T':
+	  printf("Nuvarande antal: %d", tmp_item->price);
+	  int tmp_info = ask_question_int("Vad vill du ändra antalet till?");
+	  tmp_item->price = tmp_info;
+	  break;
+
+	default:
+	  puts("error");
+	  break;
+	}
+    }
+}
+
+
+void add_goods(tree_t *tree)
+{
+  char name[255] = ask_question_string("Enter name:");
+  if(tree_has_key(tree, name))
+    {
+      puts("Varan finns redan, använder samma beskrivning & pris!");
+      list_t *list = tree_get(tree, item->name);
+      item_t existing_item = list_first(list);
+      item_t item = input_existing_item(name, existing_item->description, existing_item->price);
+      for(int i=0; i < list_length(list); i++)
+	{
+	  char *shelf = list_get(list, i)->shelf;
+	  if(shelf == item->shelf)
+	    {
+	      list_get(list, i)->amount += item->amount;
+	      return;
+	    }
+	}
+      list_append(list, item);
+    }
+  else
+    {
+      item_t item = input_item(name);
+      list_t *list = new_list();
+      list_append(list, item);
+      tree_insert(tree, item->name, list);
+    }
+  return;
+}
+*/
