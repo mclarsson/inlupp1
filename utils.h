@@ -31,5 +31,10 @@ int ask_question_int(char *question);
 double ask_question_float(char *question);
 char *ask_question_shelf(char *question);
 char ask_question_char(char *question);
+void print_menu();
+char ask_question_menu();
+void print_edit_menu();
+char ask_question_edit_menu();
+
 
 #endif
