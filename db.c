@@ -11,13 +11,16 @@
 // Types
 //
 
-typedef struct item item_t;
+typedef struct shelf shelf_t;
 
 struct item {
-  char *name;
   char *description;
   int price;
-  char *shelf;
+  list_t *shelves;
+};
+
+struct shelf {
+  char *name;
   int amount;
 };
 
@@ -80,9 +83,30 @@ bool shelf_in_use(item_t *new, item_t *db, int db_siz)
   return false;
 }
 
-void display_goods(tree_t *tree)
+void list_goods(tree_t *tree)
 {
-  return;
+  int size = tree_size(tree);
+  int page_size = 20;
+  int pages_to_view = 1;
+  T *products = tree_elements(tree);
+
+  if (size > page_size)
+    {
+      do
+	{
+	  pages_to_view = ask_question_int("Hur många sidor vill du se?");
+	} while (pages_to_view > size / page_size);
+    }
+
+  int index = 0;
+  for (int p = 0; p < pages_to_view; ++p)
+    {
+      int max = size - page_size * p < page_size ? size - page_size * p : page_size;
+      for (int i = 1; i <= max; ++i, ++index)
+	{
+	  printf("%d: %s", i, products[index]->name);
+	}
+    }
 }
 
 /*

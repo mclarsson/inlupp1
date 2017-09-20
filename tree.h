@@ -1,12 +1,13 @@
 #ifndef __tree_h__
 #define __tree_h__
 
+#include "db.c"
 #include <stdbool.h>
 
 /// Change this definition and replace int with the appropriate type
 /// in your program. Note, however, that your implementation of tree.c
 /// should treat T as if it did not know the type.
-typedef int T;
+typedef item_t T;
 /// For now, let an element's key be string 
 typedef char *K;
 
@@ -43,7 +44,7 @@ tree_t *tree_new();
 /// \param cleanup a function that takes a key and element as
 ///        argument, to be used to free memory. If this param is 
 ///        NULL, no cleanup of keys or elements will happen.
-// void tree_delete(tree_t *tree, tree_action cleanup);
+void tree_delete(tree_t *tree, tree_action cleanup);
 
 /// Get the size of the tree 
 ///

@@ -13,7 +13,7 @@ typedef struct list list_t;
 
 /// Change this definition and replace int with the appropriate type
 /// in your program. 
-typedef item_t L;
+typedef shelf_t L;
 
 /// \file list.h
 ///
