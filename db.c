@@ -13,7 +13,7 @@
 //
 
 struct item {
-  char *description[255];
+  char *description;
   int price;
   list_t *shelves;
 };
@@ -23,17 +23,27 @@ struct shelf {
   int amount;
 };
 
-shelf_t make_shelf(char *shelf, int amount)
+shelf_t *make_shelf(char *name, int amount)
 {
-  return (shelf_t) { .name = strdup(shelf), .amount = amount};
+  shelf_t *new = calloc(1, sizeof(shelf_t));
+  new->name = name;
+  new->amount = amount;
+  return new;
 }
 
-item_t make_item(char *description, int price, int amount, char *shelf)
+item_t *make_item(char *description, int price)
 {
-  list_t *shelves = list_new();
-  shelf_t new_shelf = make_shelf(shelf, amount);
-  list_append(shelves, &new_shelf);
-  return (item_t) { .description = strdup(description), .price = price, .shelves = shelves};
+  item_t *new = calloc(1, sizeof(item_t));
+  new->description = description;
+  new->price = price;
+  new->shelves = list_new();
+  return new;
+}
+
+void add_shelf(item_t *item, char *name, int amount)
+{
+  shelf_t *new = make_shelf(name, amount);
+  list_append(item->shelves, new);
 }
 
 //

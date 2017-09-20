@@ -64,7 +64,7 @@ int main (void)
 {
   tree_t *tree = tree_new();
   item_t item = make_item("hej", 1, 1, "A25");
-  tree_insert(tree, "test", item);
+  tree_insert(tree, "test", shelf);
   free(tree);
   return 0;
 }

@@ -6,7 +6,6 @@
 #define __list_h__
 
 #include <stdbool.h>
-#include "db.h"
 
 /// Define struct list in your .c file not here! (why?)
 typedef struct list list_t;
