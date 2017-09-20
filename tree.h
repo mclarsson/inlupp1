@@ -43,7 +43,7 @@ tree_t *tree_new();
 /// \param cleanup a function that takes a key and element as
 ///        argument, to be used to free memory. If this param is 
 ///        NULL, no cleanup of keys or elements will happen.
-void tree_delete(tree_t *tree, tree_action cleanup);
+// void tree_delete(tree_t *tree, tree_action cleanup);
 
 /// Get the size of the tree 
 ///

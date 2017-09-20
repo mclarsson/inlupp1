@@ -9,6 +9,7 @@ typedef struct node node_t;
 
 struct tree {
   node_t *top;
+  int size;
 };
 
 struct node {
@@ -39,53 +40,35 @@ tree_t *tree_new()
 /// Frees node and subtrees
 ///
 /// \param node Node to start remove at
-void free_branches(node_t *node)
+void free_branches(node_t *node, tree_action cleanup)
 {
   if (node->left != NULL)
     {
-      free_branches(node->left);
+      free_branches(node->left, cleanup);
     }
 
   if (node->right != NULL)
     {
-      free_branches(node->right);
+      free_branches(node->right, cleanup);
     }
 
-  free(node);
+  cleanup(node->key, node->element);
 }
 
 /// Remove a tree along with all T elements.
-/// Note, if T is a pointer, elements will not
-/// be removed. 
 ///
-/// \returns: empty tree
-void tree_delete(tree_t *tree)
+/// \param tree the tree
+/// \param cleanup a function that takes a key and element as
+///        argument, to be used to free memory. If this param is 
+///        NULL, no cleanup of keys or elements will happen.
+void tree_delete(tree_t *tree, tree_action cleanup)
 {
   if (tree->top != NULL)
     {
-      free_branches(tree->top);
+      free_branches(tree->top, cleanup);
     }
 
   free(tree);
-}
-
-/// Count all nodes in tree
-///
-/// \param node Node to continue counting at.
-/// \returns Number of nodes in tree.
-int count_nodes(node_t *node)
-{
-  if (node->left == NULL && node->right == NULL)
-    {
-      // end of branch
-      return 1;
-    }
-  else
-    {
-      int left  = node->left  == NULL ? 0 : count_nodes(node->left);
-      int right = node->right == NULL ? 0 : count_nodes(node->right);
-      return 1 + left + right;
-    }
 }
 
 /// Get the size of the tree 
@@ -93,7 +76,7 @@ int count_nodes(node_t *node)
 /// \returns: the number of nodes in the tree
 int tree_size(tree_t *tree)
 {
-  return tree->top == NULL ? 0 : count_nodes(tree->top);
+  return tree->size;
 }
 
 /// Return the biggest of two numbers
@@ -187,17 +170,21 @@ bool tree_insert(tree_t *tree, K key, T elem)
 { 
   node_t *new = calloc(1, sizeof(node_t));
   new->key = key;
-  new->element = elem;
+  new->element = elem;;
   
   if (tree->top == NULL)
     {
+      tree->size = 1;
       tree->top = new;
       return true;
     }
-  else
+  else if (insert_node(tree->top, new))
     {
-      return insert_node(tree->top, new);
+      tree->size++;
+      return true;
     }
+
+  return false;
 }
 
 /// Helper for tree_has_key TODO
@@ -252,4 +239,139 @@ T find_element(node_t *node, K key)
 T tree_get(tree_t *tree, K key)
 {
   return find_element(tree->top, key);
+}
+
+/// Collects elements in tree in ascending order into array.
+///
+/// \param node Current node to collect.
+/// \param elements Array to store elements in.
+/// \param cur_index Current index to store element in array at.
+/// \returns next available index in array.
+int collect_elements(node_t *node, T *elements, int cur_index)
+{
+  if (node->left == NULL && node->right == NULL)
+    {
+      // End of branch
+      elements[cur_index] = node->element;
+      return cur_index + 1;
+    }
+  else
+    {
+      int new_index = cur_index;
+      if (node->left != NULL)
+	{
+	  // Collect nodes in left branch first
+	  new_index = collect_elements(node->left, elements, cur_index);
+	}
+
+      // Add this node after every node on the left branch has been added
+      elements[new_index] = node->element;
+      
+      if (node->right == NULL)
+	{
+	  // Return new index to parent node when done with this node
+	  return new_index + 1;
+	}
+      else
+	{
+	  // Collect all nodes in right branch before parent node is collected
+	  return collect_elements(node->right, elements, new_index + 1);
+	}
+    }
+}
+
+/// Returns an array holding all the elements in the tree
+/// in ascending order of their keys (which are not part
+/// of the value).
+///
+/// \param tree pointer to the tree
+/// \returns: array of tree_size() elements
+T *tree_elements(tree_t *tree)
+{
+  int size = tree_size(tree);
+  T *elements = calloc(size, sizeof(T));
+  collect_elements(tree->top, elements, 0);
+  return elements;
+}
+
+
+/// Collects elements in tree in ascending order into array.
+///
+/// \param node Current node to collect.
+/// \param elements Array to store elements in.
+/// \param cur_index Current index to store element in array at.
+/// \returns next available index in array.
+int collect_keys(node_t *node, K *elements, int cur_index)
+{
+  if (node->left == NULL && node->right == NULL)
+    {
+      // End of branch
+      elements[cur_index] = node->key;
+      return cur_index + 1;
+    }
+  else
+    {
+      int new_index = cur_index;
+      if (node->left != NULL)
+	{
+	  // Collect nodes in left branch first
+	  new_index = collect_keys(node->left, elements, cur_index);
+	}
+
+      // Add this node after every node on the left branch has been added
+      elements[new_index] = node->key;
+      
+      if (node->right == NULL)
+	{
+	  // Return new index to parent node when done with this node
+	  return new_index + 1;
+	}
+      else
+	{
+	  // Collect all nodes in right branch before parent node is collected
+	  return collect_keys(node->right, elements, new_index + 1);
+	}
+    }
+}
+
+/// Returns an array holding all the keys in the tree
+/// in ascending order.
+///
+/// \param tree pointer to the tree
+/// \returns: array of tree_size() keys
+K *tree_keys(tree_t *tree)
+{
+  int size = tree_size(tree);
+  K *keys = calloc(size, sizeof(K));
+  collect_keys(tree->top, keys, 0);
+  return keys;
+}
+
+int main(void)
+{ 
+  tree_t *tree = tree_new();
+  char *keys[] = {"D", "B", "C", "A", "F", "G", "E"};
+  int vals[] = {4, 2, 3, 1, 6, 7, 5};
+  for (int i = 0; i < 7; i++)
+    {
+      tree_insert(tree, keys[i], vals[i]);
+    }
+
+  printf("size: %d \n", tree_size(tree));
+  
+  T *elements = tree_elements(tree);
+  for (int i = 0; i < tree_size(tree); i++)
+    {
+      printf("%d \n", elements[i]);
+    }
+  free(elements);
+
+  K *tkeys = tree_keys(tree);
+  for (int i = 0; i < tree_size(tree); i++)
+    {
+      printf("%s \n", tkeys[i]);
+    }
+  free(tkeys);
+  
+  return 0;
 }
