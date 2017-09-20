@@ -37,7 +37,7 @@ item_t make_item(char *description, int price, int amount, char *shelf)
   return (item_t) { .description = strdup(description), .price = price, .shelves = shelves};
 }
 
-/*
+
 item_t input_item()
 {
 
@@ -66,7 +66,7 @@ void input_existing_item(list_t *shelves)
 
   for(int i = 0; i < list_length(shelves); i++)
     {
-      L tmp_shelf = list_get(shelves, i);
+      shelf_t *tmp_shelf = list_get(shelves, i);
       if(tmp_shelf->name == shelf)
 	{
 	  tmp_shelf->amount += amount;
@@ -79,7 +79,7 @@ void input_existing_item(list_t *shelves)
   
   return;
 }
-*/
+
 
 void remove_goods(tree_t *tree)
 {
@@ -134,7 +134,7 @@ void edit_goods(tree_t *tree)
     }
 }
 */
-/*
+
 void add_goods(tree_t *tree)
 {
   char name[255];
@@ -142,7 +142,9 @@ void add_goods(tree_t *tree)
   if(tree_has_key(tree, name))
     {
       puts("Varan finns redan, använder samma beskrivning & pris!");
-      //input_existing_item(tree_get(tree, item->name)->shelves);
+      item_t *item = tree_get(tree, name);
+      list_t *shelves = item->shelves;
+      input_existing_item(shelves);
     }
   else
     {
@@ -151,7 +153,8 @@ void add_goods(tree_t *tree)
     }
   return;
 }
-*
+
+
 //
 // Functions
 //
