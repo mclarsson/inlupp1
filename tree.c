@@ -170,7 +170,7 @@ bool tree_insert(tree_t *tree, K key, T elem)
 { 
   node_t *new = calloc(1, sizeof(node_t));
   new->key = key;
-  new->element = elem;;
+  new->element = elem;
   
   if (tree->top == NULL)
     {
@@ -345,33 +345,4 @@ K *tree_keys(tree_t *tree)
   K *keys = calloc(size, sizeof(K));
   collect_keys(tree->top, keys, 0);
   return keys;
-}
-
-int main(void)
-{ 
-  tree_t *tree = tree_new();
-  char *keys[] = {"D", "B", "C", "A", "F", "G", "E"};
-  int vals[] = {4, 2, 3, 1, 6, 7, 5};
-  for (int i = 0; i < 7; i++)
-    {
-      tree_insert(tree, keys[i], vals[i]);
-    }
-
-  printf("size: %d \n", tree_size(tree));
-  
-  T *elements = tree_elements(tree);
-  for (int i = 0; i < tree_size(tree); i++)
-    {
-      printf("%d \n", elements[i]);
-    }
-  free(elements);
-
-  K *tkeys = tree_keys(tree);
-  for (int i = 0; i < tree_size(tree); i++)
-    {
-      printf("%s \n", tkeys[i]);
-    }
-  free(tkeys);
-  
-  return 0;
 }

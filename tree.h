@@ -1,13 +1,13 @@
 #ifndef __tree_h__
 #define __tree_h__
 
-#include "db.c"
+#include "db.h"
 #include <stdbool.h>
 
 /// Change this definition and replace int with the appropriate type
 /// in your program. Note, however, that your implementation of tree.c
 /// should treat T as if it did not know the type.
-typedef item_t T;
+typedef struct item_t T;
 /// For now, let an element's key be string 
 typedef char *K;
 

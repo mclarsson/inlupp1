@@ -1,21 +1,23 @@
 
-#include "utils.c"
+#include <stdio.h>
+#include <string.h>
+
+#include "utils.h"
 #include "tree.h"
-#include "list.h"
-#include "db.c"
 
 char ask_question_menu()
 {
-  print_menu();
+  // print_menu();
 
-  char menu_items[] = "LlTtRrGgHhAa";
-  char c;
-  
+  //char menu_items[] = "LlTtRrGgHhAa";
+  char c = 'c';
+
+  /*
   do {
     // Ask for c while c is not in menu_items
     c = ask_question_char("Vad vill du göra?");
   } while (strchr(menu_items, c) == NULL);
-
+  */
   return toupper(c);
 }
 
@@ -29,16 +31,16 @@ void print_edit_menu()
 
 char ask_question_edit_menu()
 {
-  print_menu();
+  //print_menu();
 
-  char menu_items[] = "BbPpLlTt";
-  char c;
-  
+  //char menu_items[] = "BbPpLlTt";
+  char c = 'c';
+  /*
   do {
     // Ask for c while c is not in menu_items
     c = ask_question_char("Välj rad eler [a]vbryt");
   } while (strchr(menu_items, c) == NULL);
-
+  */
   return toupper(c);
 }
 
@@ -55,52 +57,13 @@ void print_menu()
 
 void exit_program()
 {
-  exit();
-}
-
-int event_loop()
-{
-  tree_t *tree = tree_new();
-  char input;
-  do {
-
-    input = ask_question_menu();
-    
-    switch (input)
-      {
-      case 'L':
-	add_goods(tree);
-	break;
-	
-      case 'T':
-	#db_siz = remove_item_from_db(db, db_siz);
-	break;
-
-      case 'R':
-	#edit_db(db, db_siz);
-	break;
-	
-      case 'G':
-	fputs("Not yet implemented! \n", stdout);
-	break;
-	
-      case 'H':
-	#list_db(db, db_siz);
-	break;
-	
-      case 'A':
-	exit_program();
-      default:
-	puts("INPUT ERROR");
-	break;
-      }
-    
-  } while (true);
-
-  return 0;
+  return;
 }
 
 int main (void)
-{ 
+{
+  tree_t *tree = tree_new();
+  free(tree);
+  
   return 0;
 }
