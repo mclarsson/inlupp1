@@ -47,27 +47,35 @@ void add_shelf(item_t *item, char *name, int amount)
   list_append(item->shelves, new);
 }
 
-
-item_t input_item()
+char *item_description(item_t *item)
 {
+  return item->description;
+}
 
+int item_price(item_t *item)
+{
+  return item->price;
+}
+
+list_t *item_shelves(item_t *item)
+{
+  return item->shelves;
+}
+
+item_t *input_item()
+{
   char description[255];
   int price;
-  char shelf[255];
-  int amount;
 
   strcpy(description, ask_question_string("Enter description:") );
   price = ask_question_int("Enter price:");
-  strcpy(shelf, ask_question_shelf("Enter shelf:") );
-  amount = ask_question_int("Enter amount:");
   
-  return make_item(description, price, amount, shelf);
+  return make_item(description, price);
 }
 
 
 void input_existing_item(list_t *shelves)
 {
-  
   char shelf[255];
   int amount;
   
@@ -84,7 +92,7 @@ void input_existing_item(list_t *shelves)
 	}
     }
 
-  shelf_t new_shelf = make_shelf(shelf, amount);
+  shelf_t *new_shelf = make_shelf(shelf, amount);
   list_append(shelves, &new_shelf);
   
   return;
@@ -95,46 +103,43 @@ void remove_goods(tree_t *tree)
 {
   return;
 }
-
 /*
 void edit_goods(tree_t *tree)
 {
   char *name = "test";
   
-  item_t tmp_item = tree_get(tree, name);
-  list_t *shelves = tmp_item.shelves;
+  item_t *tmp_item = tree_get(tree, name);
+  list_t *shelves = tmp_item->shelves;
   
   char input = ask_question_edit_menu();
       
   switch(input)
     {	  
     case 'B':
-      printf("Nuvarande beskrivning: %s", tmp_item.description);
-      char *tmp_desc = ask_question_string("Vad vill du ändra beskrivningen till?");
-      tmp_item.description = strdup(tmp_desc);
+      printf("Nuvarande beskrivning: %s", tmp_item->description);
+      strcpy(tmp_item->description, ask_question_string("Vad vill du ändra beskrivningen till?"));
       break;
 
     case 'P':
-      printf("Nuvarande pris: %d", tmp_item.price);
-      int tmp_price = ask_question_int("Vad vill du ändra priset till?");
-      tmp_item.price = tmp_price;
+      printf("Nuvarande pris: %d", tmp_item->price);
+      tmp_item->price = ask_question_int("Vad vill du ändra priset till?");
       break;
 
     case 'L':
-      printf("Nuvarande lagerhylla: %s", list_get(shelves, 0).name);
+      printf("Nuvarande lagerhylla: %s", list_get(shelves, 0)->name);
       char *tmp_shelf = ask_question_shelf("Vad vill du ängra lagerhyllan till?");
       for(int i = 0; i < list_length(shelves); i++)
 	{
-	  list_get(shelves, i).name = strdup(tmp_shelf);
+	  list_get(shelves, i)->name = strdup(tmp_shelf);
 	}
       break;
 
     case 'T':
-      printf("Nuvarande antal: %d", list_get(shelves, 0).price);
+      printf("Nuvarande antal: %d", list_get(shelves, 0)->price);
       int tmp_amount = ask_question_int("Vad vill du ändra antalet till?");
-            for(int i = 0; i < list_length(shelves); i++)
+      for(int i = 0; i < list_length(shelves); i++)
 	{
-	  list_get(shelves, i).amount = tmp_amount;
+	  list_get(shelves, i)->amount = tmp_amount;
 	}
       break;
 
@@ -143,7 +148,6 @@ void edit_goods(tree_t *tree)
       break;
     }
 }
-*/
 
 void add_goods(tree_t *tree)
 {
@@ -168,7 +172,7 @@ void add_goods(tree_t *tree)
 //
 // Functions
 //
-/*
+
 void list_goods(tree_t *tree)
 {
   int size = tree_size(tree);
