@@ -23,6 +23,19 @@ struct shelf {
   int amount;
 };
 
+shelf_t make_shelf(char *shelf, int amount)
+{
+  return (shelf_t) { .name = strdup(shelf), .amount = amount};
+}
+
+item_t make_item(char *description, int price, int amount, char *shelf)
+{
+  list_t *shelves = list_new();
+  shelf_t new_shelf = make_shelf(shelf, amount);
+  list_append(shelves, &new_shelf);
+  return (item_t) { .description = strdup(description), .price = price, .shelves = shelves};
+}
+
 //
 // Functions
 //

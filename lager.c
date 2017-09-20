@@ -4,6 +4,7 @@
 
 #include "utils.h"
 #include "tree.h"
+#include "db.h"
 
 void print_menu()
 {
@@ -62,7 +63,8 @@ void exit_program()
 int main (void)
 {
   tree_t *tree = tree_new();
+  item_t item = make_item("hej", 1, 1, "A25");
+  tree_insert(tree, "test", item);
   free(tree);
-  
   return 0;
 }
