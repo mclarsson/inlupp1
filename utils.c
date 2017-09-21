@@ -195,8 +195,9 @@ char *ask_question_shelf(char *question)
 
 char ask_question_char(char *question)
 {
-  puts(question);
+  printf("%s ", question);
   char c = fgetc(stdin);
+  puts("");
   clear_input_buffer();
   return c;
 }
@@ -244,7 +245,7 @@ void print_menu()
   fputs("[R]edigera en vara\n", stdout);
   fputs("Ån[g]ra senaste ändringen\n", stdout);
   fputs("Lista [h]ela varukatalogen\n", stdout);
-  fputs("[A]vsluta\n", stdout);
+  fputs("[A]vsluta\n\n", stdout);
 }
 
 char ask_question_menu()
