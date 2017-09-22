@@ -157,7 +157,7 @@ char *select_goods(tree_t *tree)
 	{
 	  current_page += -1;
 	}
-      else if(input > (sizeof(products)/sizeof(K)))
+      else if(input+(current_page*page_size) > (sizeof(products)/sizeof(K)))
 	{
 	  puts("Ogiltigt val");
 	}
