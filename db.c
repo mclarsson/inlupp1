@@ -128,6 +128,15 @@ void add_goods(tree_t *tree)
 // Functions
 //
 
+bool is_valid_int(int input, int min, int max, int opt1, int opt2)
+{
+  if((input >= min && input <= max) || input == opt1 || input == opt2)
+    {
+      return true;
+    }
+  return false;
+}
+
 char *select_goods(tree_t *tree)
 {
   //int size = tree_size(tree);
@@ -136,18 +145,23 @@ char *select_goods(tree_t *tree)
   K *products = tree_keys(tree);
   int input = 0;
   int current_page = 0;
+  int opt1 = 21;
+  int opt2 = 22;
+  int no_products = sizeof(products)/sizeof(k);
     
   while(true)
     {
       for(int i = 0+(current_page*page_size); i < page_size+(current_page*page_size); i++)
 	{
-	  if(i < (sizeof(products)/sizeof(K)))
+	  if(i < no_products)
 	    {
 	      printf("%d %s", i%page_size, products[i]);
 	    }
 	}
-      
-      input = ask_menu_int("Choose a product (number),\n[21] Next page\n[22] Previous page]");
+      while(is_valid_int(input, , ,opt1, opt2) == false)
+	{
+	  input = ask_question_int("Choose a product (number),\n[21] Next page\n[22] Previous page]");
+	}
       
       if(input == 21)
 	{
@@ -157,7 +171,7 @@ char *select_goods(tree_t *tree)
 	{
 	  current_page += -1;
 	}
-      else if(input+(current_page*page_size) > (sizeof(products)/sizeof(K)))
+      else if(input+(current_page*page_size) > no_products)
 	{
 	  puts("Ogiltigt val");
 	}
