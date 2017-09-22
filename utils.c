@@ -61,34 +61,6 @@ bool is_number(char *str) {
   return true;
 }
 
-bool is_number_limit(char *str) {
-
-  int len = strlen(str);
-  int min = 1;
-  int max = 22;
-
-  // Negative numbers
-  if (str[0] != '-' && !isdigit(str[0])) {
-    return false;
-  }
-  
-  for (int i = 1; i < len; i++) {
-    if (!isdigit(str[i])) {
-      return false;
-    }
-  }
-
-  int value = atoi(str);
-  if(value >= min && value <= max)
-    {
-      return true;
-    }
-  else
-    {
-      return false;
-    }
-}
-
 /**
  
  * clear_input_buffer
@@ -173,12 +145,6 @@ answer_t ask_question(char *question, check_func check, convert_func convert)
 int ask_question_int(char *question)
 {
   return ask_question(question, is_number, (convert_func) atoi).i;
-}
-
-
-int ask_menu_int(char *question)
-{
-  return ask_question(question, is_number_limit, (convert_func) atoi).i;
 }
 
 /**

@@ -147,7 +147,7 @@ char *select_goods(tree_t *tree)
   int current_page = 0;
   int opt1 = 21;
   int opt2 = 22;
-  int no_products = sizeof(products)/sizeof(k);
+  int no_products = sizeof(products)/sizeof(K);
     
   while(true)
     {
@@ -155,19 +155,30 @@ char *select_goods(tree_t *tree)
 	{
 	  if(i < no_products)
 	    {
-	      printf("%d %s", i%page_size, products[i]);
+	      printf("%d %s", (i%page_size)+1, products[i]);
 	    }
 	}
-      while(is_valid_int(input, , ,opt1, opt2) == false)
+
+      int max_choice = 0;
+      if(((current_page+1)*page_size) < no_products)
+	{
+	  max_choice = 20;
+	}
+      else
+	{
+	  max_choice = no_products%page_size;
+	}
+      
+      while(is_valid_int(input, 1, max_choice, opt1, opt2) == false)
 	{
 	  input = ask_question_int("Choose a product (number),\n[21] Next page\n[22] Previous page]");
 	}
       
-      if(input == 21)
+      if(input == opt1)
 	{
 	  current_page += 1;
 	}
-      else if(input == 22 && current_page > 0)
+      else if(input == opt2 && current_page > 0)
 	{
 	  current_page += -1;
 	}
@@ -177,7 +188,7 @@ char *select_goods(tree_t *tree)
 	}
       else
 	{
-	  char *name = strdup(products[input+(page_size*current_page)]);
+	  char *name = strdup(products[input+(page_size*current_page)-1]);
 	  return name;
 	}
     }
