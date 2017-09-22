@@ -240,6 +240,7 @@ void swap(int *a, int *b)
 
 void print_menu()
 {
+  fputs("\n", stdout);
   fputs("[L]ägga till en vara\n", stdout);
   fputs("[T]a bort en vara \n", stdout);
   fputs("[R]edigera en vara\n", stdout);

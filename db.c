@@ -24,6 +24,11 @@ struct shelf {
   int amount;
 };
 
+/// Creates new shelf
+///
+/// \param name Name of shelf (shelf format expected)
+/// \param amount Amount of items on shelf
+/// \returns pointer to shelf
 shelf_t *make_shelf(char *name, int amount)
 {
   shelf_t *new = calloc(1, sizeof(shelf_t));
@@ -32,34 +37,29 @@ shelf_t *make_shelf(char *name, int amount)
   return new;
 }
 
+/// Creates item
+///
+/// \param description Description of item.
+/// \param price Price of item.
+/// \returns pointer to item.
 item_t *make_item(char *description, int price)
 {
   item_t *new = calloc(1, sizeof(item_t));
-  new->description = description;
+  new->description = strdup(description);
   new->price = price;
   new->shelves = list_new();
   return new;
 }
 
+/// Adds shelf to item
+///
+/// \param item Item to add to
+/// \param name Name of shelf
+/// \param amount Amount of item on shelf
 void add_shelf(item_t *item, char *name, int amount)
 {
   shelf_t *new = make_shelf(name, amount);
   list_append(item->shelves, new);
-}
-
-char *item_description(item_t *item)
-{
-  return item->description;
-}
-
-int item_price(item_t *item)
-{
-  return item->price;
-}
-
-list_t *item_shelves(item_t *item)
-{
-  return item->shelves;
 }
 
 item_t *input_item()
@@ -72,7 +72,6 @@ item_t *input_item()
   
   return make_item(description, price);
 }
-
 
 void input_existing_item(list_t *shelves)
 {
@@ -117,10 +116,9 @@ void add_goods(tree_t *tree)
     }
   else
     {
-      item_t *item = input_item(name);
+      item_t *item = input_item();
       tree_insert(tree, name, item);
     }
-  return;
 }
 
 
@@ -194,7 +192,50 @@ char *select_goods(tree_t *tree)
     }
 }
 
+/// Outputs entire catalog in list format.
+///
+/// \param tree Tree containing catalog.
 void list_goods(tree_t *tree)
+{
+  int size = tree_size(tree);
+  K *items = tree_keys(tree);
+  int page_size = 20;
+  // Current index for iteration through items
+  int index = 0;
+  int current_page = 1;
+  bool view_next = true;
+  
+  while (size > index && view_next)
+    {
+      printf("Sida: %d \n\n", current_page);
+      
+      // List items
+      int max;
+      if (current_page * page_size > size)
+	{
+	  max = size - index;
+	}
+      else
+	{
+	  max = page_size;
+	}
+      
+      for (int k = 1; k <= max; ++k, ++index)
+	{
+	  printf("%d.\t%s\n", k, items[index]);
+	}
+
+      // Only ask for next page if not all items have been listed
+      if (size == index || ask_question_char("\nSe nästa sida? (y / n)") != 'y')
+	{
+	  view_next = false;
+	}
+
+      ++current_page;
+    } 
+}
+
+void display_goods(tree_t *tree)
 {
   char *goods = select_goods(tree);
   item_t *item = tree_get(tree, goods);

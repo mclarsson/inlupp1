@@ -169,7 +169,7 @@ bool insert_node(node_t *parent, node_t *insert)
 bool tree_insert(tree_t *tree, K key, T elem)
 { 
   node_t *new = calloc(1, sizeof(node_t));
-  new->key = key;
+  new->key = strdup(key);
   new->element = elem;
   
   if (tree->top == NULL)
@@ -290,7 +290,10 @@ T *tree_elements(tree_t *tree)
 {
   int size = tree_size(tree);
   T *elements = calloc(size, sizeof(T));
-  collect_elements(tree->top, elements, 0);
+  if (size > 0)
+    {
+      collect_elements(tree->top, elements, 0);
+    }
   return elements;
 }
 
@@ -343,6 +346,9 @@ K *tree_keys(tree_t *tree)
 {
   int size = tree_size(tree);
   K *keys = calloc(size, sizeof(K));
-  collect_keys(tree->top, keys, 0);
+  if (size > 0)
+    {
+      collect_keys(tree->top, keys, 0);
+    }
   return keys;
 }
