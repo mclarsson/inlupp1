@@ -3,6 +3,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <time.h>
+#include <limits.h>
 
 #include "db.h"
 #include "utils.h"
@@ -143,7 +144,7 @@ void add_goods(tree_t *tree)
 
 int get_products_n(K *products)
 {
-  for(int i = 0; i < 99999999; i++)
+  for(int i = 0; i < INT_MAX; i++)
     {
       if(products[i] == NULL)
 	{
