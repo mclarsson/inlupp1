@@ -15,7 +15,7 @@ void exit_program()
 
 void event_loop()
 {
-  tree_t *catalog = tree_new();
+  //tree_t *catalog = tree_new();
   
   puts("\n Välkommen till lagerhantering 1.0");
   puts(" ================================= \n");
