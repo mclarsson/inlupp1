@@ -9,6 +9,10 @@ typedef struct item item_t;
 
 typedef struct tree tree_t;
 
+typedef struct goods goods_s;
+
+typedef struct action action_s;
+
 /// Creates new shelf
 ///
 /// \param name Name of shelf (shelf format expected)

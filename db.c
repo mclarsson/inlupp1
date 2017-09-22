@@ -24,6 +24,21 @@ struct shelf {
   int amount;
 };
 
+struct goods
+{
+  item_t item;
+  shelf_t shelf;
+};
+
+struct action
+{
+  int type; // nothing = 0, edit = 1
+  goods_s *merch;
+  goods_s copy;
+};
+
+action_s global_undo;
+
 /// Creates new shelf
 ///
 /// \param name Name of shelf (shelf format expected)
