@@ -245,36 +245,16 @@ void display_goods(tree_t *tree)
       shelf_t *tmp_shelf = list_get(shelves, i);
       printf("Name: %s \nDescription: %s \nPrice : %d \nShelf: %s \nAmount: %d", goods, item->description, item->price, tmp_shelf->name, tmp_shelf->amount);
     }
-  
-  /*
-    KOMMENTAR: man ska kunna bläddra mellan sidor med max 20, inte se allt samtidigt
-    if (size > page_size)
-    {
-    do
-    {
-    pages_to_view = ask_question_int("Hur många sidor vill du se?");
-    } while (pages_to_view > size / page_size);
-    }
-
-    int index = 0;
-    for (int p = 0; p < pages_to_view; ++p)
-    {
-    int max = size - page_size * p < page_size ? size - page_size * p : page_size;
-    for (int i = 1; i <= max; ++i, ++index)
-    {
-    printf("%d: %s", i, products[index]);
-    }
-    }
-  */
 }
 
 bool shelf_exists(tree_t *tree, char *shelf)
 {
-  /*
-  item_t **products = tree_elements(tree);
+  
+  L *products = tree_elements(tree);
   for(int i = 0; i < (sizeof(products)/sizeof(item_t)); i++)
     {
-      list_t *shelves = products[i]->shelves;
+      item_t *tmp_item = products[i];
+      list_t *shelves = tmp_item->shelves;
       for(int x = 0; i < list_length(shelves); x++)
 	{
 	  shelf_t *tmp_shelf = list_get(shelves, x);
@@ -284,7 +264,7 @@ bool shelf_exists(tree_t *tree, char *shelf)
 	    }
 	}
     }
-  */
+  
   return false;
 }
 
@@ -311,32 +291,27 @@ void edit_goods(tree_t *tree)
 
     case 'L':
       {
-	shelf_t *base_shelf_shelfname = list_first(shelves);
-	printf("Nuvarande lagerhylla: %s", base_shelf_shelfname->name);
-	char *tmp_shelf = base_shelf_shelfname->name;
-	
-	while(shelf_exists(tree, tmp_shelf))
-	  {
-	    tmp_shelf = ask_question_shelf("Vad vill du ängra lagerhyllan till? Du får inte välja en som redan finns.");
-	  }
-	
 	for(int i = 0; i < list_length(shelves); i++)
 	  {
-	    shelf_t *shelf = list_get(shelves, i);
-	    strcpy(shelf->name, tmp_shelf);
+	    shelf_t *base_shelf_shelfname = list_get(shelves, i);
+	    printf("Nuvarande lagerhylla: %s", base_shelf_shelfname->name);
+	    char *tmp_shelf = base_shelf_shelfname->name;
+	
+	    while(shelf_exists(tree, tmp_shelf))
+	      {
+		tmp_shelf = ask_question_shelf("Vad vill du ängra lagerhyllan till? Du får inte välja en som redan finns.");
+	      }
 	  }
 	break;
       }
 
     case 'T':
       {
-	shelf_t *base_shelf_amount = list_first(shelves);
-	printf("Nuvarande antal: %d", base_shelf_amount->amount);
-	int tmp_amount = ask_question_int("Vad vill du ändra antalet till?");
 	for(int i = 0; i < list_length(shelves); i++)
 	  {
-	    shelf_t *shelf = list_get(shelves, i);
-	    shelf->amount = tmp_amount;
+	    shelf_t *base_shelf_amount = list_get(shelves, i);
+	    printf("Nuvarande lagerhylla: %s\nNuvarande antal: %d", base_shelf_amount->name, base_shelf_amount->amount);
+	    int tmp_amount = ask_question_int("Vad vill du ändra antalet till?");
 	  }
 	break;
       }
