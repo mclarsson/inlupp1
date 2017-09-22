@@ -29,6 +29,9 @@ void populate_catalog(tree_t *catalog)
       name[name_length] = '\0';
       
       item_t *item = make_item("desc", 12);
+      char *shelfname = calloc(4, sizeof(char));
+      sprintf(shelfname, "%s%d", "A", i);
+      add_shelf(item, shelfname, i);
       tree_insert(catalog, name, item);
     }
 }
@@ -61,9 +64,25 @@ int event_loop()
 	  list_goods(catalog);
 	  break;
 
+	case 'T':
+	  //remove goods
+	  remove_goods(catalog);
+	  break;
+
+	case 'R':
+	  //edit goods
+	  edit_goods(catalog);
+	  break;
+
+	case 'g':
+	  //undo
+	  //undo_action();
+	  break;
+	         	  
 	case 'A':
 	  // Exit
-	  return 0;
+	  exit_program();
+	  //return 0;
 	  break;
 	}      
     }

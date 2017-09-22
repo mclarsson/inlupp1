@@ -126,13 +126,21 @@ void add_goods(tree_t *tree)
 // Functions
 //
 
-bool is_valid_int(int input, int min, int max, int opt1, int opt2)
+bool is_valid_menu_int(K *products, int cur_page, int page_size, int opt1, int opt2, int input)
 {
-  if((input >= min && input <= max) || input == opt1 || input == opt2)
+  int page_mod_input = (cur_page*page_size)+input;
+  if(products[page_mod_input] == NULL || input < 0)
     {
-      return true;
+      if(input == opt1 || input == opt2)
+	{
+	  return true;
+	}
+      else
+	{
+	  return false;
+	}
     }
-  return false;
+  return true;
 }
 
 char *select_goods(tree_t *tree)
@@ -141,48 +149,36 @@ char *select_goods(tree_t *tree)
   int page_size = 20;
   //int pages_to_view = 1;
   K *products = tree_keys(tree);
-  int input = 0;
+  int input = -1;
   int current_page = 0;
   int opt1 = 21;
   int opt2 = 22;
-  int no_products = sizeof(products)/sizeof(K);
-    
+
   while(true)
     {
       for(int i = 0+(current_page*page_size); i < page_size+(current_page*page_size); i++)
 	{
-	  if(i < no_products)
+	  if(products[i] != NULL)
 	    {
-	      printf("%d %s", (i%page_size)+1, products[i]);
+	      printf("%d %s\n", (i%page_size)+1, products[i]);
 	    }
 	}
 
-      int max_choice = 0;
-      if(((current_page+1)*page_size) < no_products)
+      while(is_valid_menu_int(products, current_page, page_size, opt1, opt2, input) == false)
 	{
-	  max_choice = 20;
-	}
-      else
-	{
-	  max_choice = no_products%page_size;
-	}
-      
-      while(is_valid_int(input, 1, max_choice, opt1, opt2) == false)
-	{
-	  input = ask_question_int("Choose a product (number),\n[21] Next page\n[22] Previous page]");
+	  input = ask_question_int("\nChoose a product (number)\n[21] Next page\n[22] Previous page");
 	}
       
       if(input == opt1)
 	{
 	  current_page += 1;
 	}
-      else if(input == opt2 && current_page > 0)
+      else if(input == opt2)
 	{
-	  current_page += -1;
-	}
-      else if(input+(current_page*page_size) > no_products)
-	{
-	  puts("Ogiltigt val");
+	  if(current_page > 0)
+	    {
+	      current_page -= 1;
+	    }
 	}
       else
 	{
@@ -249,19 +245,28 @@ void display_goods(tree_t *tree)
 
 bool shelf_exists(tree_t *tree, char *shelf)
 {
-  
   L *products = tree_elements(tree);
-  for(int i = 0; i < (sizeof(products)/sizeof(item_t)); i++)
+  int i = 0;
+
+  while(true)
     {
-      item_t *tmp_item = products[i];
-      list_t *shelves = tmp_item->shelves;
-      for(int x = 0; i < list_length(shelves); x++)
+      if(products[i] != NULL)
 	{
-	  shelf_t *tmp_shelf = list_get(shelves, x);
-	  if(tmp_shelf->name == shelf)
+	  item_t *tmp_item = products[i];
+	  list_t *shelves = tmp_item->shelves;
+	  for(int x = 0; x < list_length(shelves); x++)
 	    {
-	      return true;
+	      shelf_t *tmp_shelf = list_get(shelves, x);
+	      if(strcmp(tmp_shelf->name, shelf) == 0)
+		{
+		  return true;
+		}
 	    }
+	  i++;
+	}
+      else
+	{
+	  return false;
 	}
     }
   
@@ -271,21 +276,21 @@ bool shelf_exists(tree_t *tree, char *shelf)
 void edit_goods(tree_t *tree)
 {
   char *name = select_goods(tree);
-  
+
   item_t *tmp_item = tree_get(tree, name);
   list_t *shelves = tmp_item->shelves;
-  
+
   char input = ask_question_edit_menu();
-      
+     
   switch(input)
     {	  
     case 'B':
-      printf("Nuvarande beskrivning: %s", tmp_item->description);
+      printf("Nuvarande beskrivning: %s\n", tmp_item->description);
       strcpy(tmp_item->description, ask_question_string("Vad vill du ändra beskrivningen till?"));
       break;
 
     case 'P':
-      printf("Nuvarande pris: %d", tmp_item->price);
+      printf("Nuvarande pris: %d\n", tmp_item->price);
       tmp_item->price = ask_question_int("Vad vill du ändra priset till?");
       break;
 
@@ -294,13 +299,15 @@ void edit_goods(tree_t *tree)
 	for(int i = 0; i < list_length(shelves); i++)
 	  {
 	    shelf_t *base_shelf_shelfname = list_get(shelves, i);
-	    printf("Nuvarande lagerhylla: %s", base_shelf_shelfname->name);
-	    char *tmp_shelf = base_shelf_shelfname->name;
+	    printf("Nuvarande lagerhylla: %s \n", base_shelf_shelfname->name);
+	    char *tmp_shelf = "Z9999";
+	    tmp_shelf = ask_question_shelf("Vad vill du ängra lagerhyllan till? Du får inte välja en som redan finns.");
 	
 	    while(shelf_exists(tree, tmp_shelf))
 	      {
 		tmp_shelf = ask_question_shelf("Vad vill du ängra lagerhyllan till? Du får inte välja en som redan finns.");
 	      }
+	    strcpy(base_shelf_shelfname->name, tmp_shelf);
 	  }
 	break;
       }
@@ -310,8 +317,9 @@ void edit_goods(tree_t *tree)
 	for(int i = 0; i < list_length(shelves); i++)
 	  {
 	    shelf_t *base_shelf_amount = list_get(shelves, i);
-	    printf("Nuvarande lagerhylla: %s\nNuvarande antal: %d", base_shelf_amount->name, base_shelf_amount->amount);
+	    printf("Nuvarande lagerhylla: %s\nNuvarande antal: %d\n", base_shelf_amount->name, base_shelf_amount->amount);
 	    int tmp_amount = ask_question_int("Vad vill du ändra antalet till?");
+	    base_shelf_amount->amount = tmp_amount;
 	  }
 	break;
       }

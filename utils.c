@@ -270,12 +270,12 @@ void print_edit_menu()
   fputs("[B]eskrivning\n", stdout);
   fputs("[P]ris\n", stdout);
   fputs("[L]agerhylla\n", stdout);
-  fputs("An[t]aö\n", stdout);
+  fputs("An[t]al\n", stdout);
 }
 
 char ask_question_edit_menu()
 {
-  print_menu();
+  print_edit_menu();
 
   char menu_items[] = "BbPpLlTt";
   char c = 'c';

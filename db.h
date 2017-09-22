@@ -38,4 +38,8 @@ void list_goods(tree_t *tree);
 
 // void edit_goods(tree_t *tree)
 
+void edit_goods(tree_t *tree);
+
+void remove_goods(tree_t *tree);
+
 #endif
