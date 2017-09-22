@@ -141,21 +141,16 @@ void add_goods(tree_t *tree)
 // Functions
 //
 
-bool is_valid_menu_int(K *products, int cur_page, int page_size, int opt1, int opt2, int input)
+int get_products_n(K *products)
 {
-  int page_mod_input = (cur_page*page_size)+input;
-  if(products[page_mod_input] == NULL || input < 0)
+  for(int i = 0; i < 99999999; i++)
     {
-      if(input == opt1 || input == opt2)
+      if(products[i] == NULL)
 	{
-	  return true;
-	}
-      else
-	{
-	  return false;
+	  return i;
 	}
     }
-  return true;
+  return 0;
 }
 
 char *select_goods(tree_t *tree)
@@ -164,41 +159,69 @@ char *select_goods(tree_t *tree)
   int page_size = 20;
   //int pages_to_view = 1;
   K *products = tree_keys(tree);
-  int input = -1;
+  char *input;
   int current_page = 0;
-  int opt1 = 21;
-  int opt2 = 22;
+  char *opt1 = "N";
+  char *opt2 = "P";
+  char *opt3 = "Q";
+  int input_n;
+  int product_size = get_products_n(products);
 
   while(true)
     {
+      input = "";
+      input_n = -1;
+
       for(int i = 0+(current_page*page_size); i < page_size+(current_page*page_size); i++)
 	{
 	  if(products[i] != NULL)
 	    {
 	      printf("%d %s\n", (i%page_size)+1, products[i]);
 	    }
+	  else
+	    {
+	      break;
+	    }
 	}
-
-      while(is_valid_menu_int(products, current_page, page_size, opt1, opt2, input) == false)
+      while(strcmp(input, opt1) != 0 && strcmp(input, opt2) != 0 && strcmp(input, opt3) != 0 && is_number(input) == false)
 	{
-	  input = ask_question_int("\nChoose a product (number)\n[21] Next page\n[22] Previous page");
+	  input = ask_question_string("\nChoose a product (number)\n[N]ext page\n[P]revious page\n[Q]uit this page");
 	}
-      
-      if(input == opt1)
+	
+      if(is_number(input))
 	{
-	  current_page += 1;
+	  input_n = atoi(input);
+	  if(input_n > 0 && input_n <= page_size && products[input_n+(page_size*current_page)-1] != NULL)
+	    {
+	      char *name = strdup(products[input_n+(page_size*current_page)-1]);
+	      return name;
+	    }
 	}
-      else if(input == opt2)
+      else if(strcmp(input, opt1) == 0)
+	{
+	  if((current_page+1)*page_size < product_size)
+	    {
+	      current_page++;
+	    }
+	  else
+	    {
+	      puts("There is no next page");
+	    }
+	}
+      else if(strcmp(input, opt2) == 0)
 	{
 	  if(current_page > 0)
 	    {
-	      current_page -= 1;
+	      current_page--;
+	    }
+	  else
+	    {
+	      puts("There is no previous page");
 	    }
 	}
       else
 	{
-	  char *name = strdup(products[input+(page_size*current_page)-1]);
-	  return name;
+	  return NULL;
 	}
     }
 }
@@ -291,7 +314,11 @@ bool shelf_exists(tree_t *tree, char *shelf)
 void edit_goods(tree_t *tree)
 {
   char *name = select_goods(tree);
-
+  if(name == NULL)
+    {
+      return;
+    }
+  
   item_t *tmp_item = tree_get(tree, name);
   list_t *shelves = tmp_item->shelves;
 
