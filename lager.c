@@ -40,6 +40,7 @@ void populate_catalog(tree_t *catalog, int size)
 int event_loop()
 {
   tree_t *catalog = tree_new();
+  action_t *act = action_new();
 
   populate_catalog(catalog, 50);
   
@@ -72,12 +73,12 @@ int event_loop()
 
 	case 'R':
 	  //edit goods
-	  edit_goods(catalog);
+	  edit_goods(catalog, act);
 	  break;
 
 	case 'G':
 	  //undo
-	  //undo_action();
+	  undo_action(catalog, act);
 	  break;
 	         	  
 	case 'A':

@@ -1,7 +1,6 @@
 #ifndef __tree_h__
 #define __tree_h__
 
-#include "db.h"
 #include <stdbool.h>
 
 /// Change this definition and replace int with the appropriate type

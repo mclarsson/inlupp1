@@ -2,16 +2,15 @@
 #define __db_h__
 
 #include "list.h"
+#include "tree.h"
 
 typedef struct shelf shelf_t;
 
 typedef struct item item_t;
 
-typedef struct tree tree_t;
+typedef struct action action_t;
 
-typedef struct goods goods_s;
-
-typedef struct action action_s;
+action_t *action_new();
 
 /// Creates new shelf
 ///
@@ -42,8 +41,10 @@ void list_goods(tree_t *tree);
 
 // void edit_goods(tree_t *tree)
 
-void edit_goods(tree_t *tree);
+void edit_goods(tree_t *tree, action_t *act);
 
 void remove_goods(tree_t *tree);
+
+void undo_action(tree_t *tree, action_t *action);
 
 #endif

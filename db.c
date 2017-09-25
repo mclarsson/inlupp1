@@ -33,12 +33,18 @@ struct goods
 
 struct action
 {
-  int type; // nothing = 0, edit = 1
-  goods_s *merch;
-  goods_s copy;
+  enum { NOTHING, ADD, REMOVE, EDIT } type;
+  union
+  {
+    struct { item_t saved; };      // REMOVE
+    struct { item_t *edited; item_t original; }; // EDIT
+  };
 };
 
-action_s global_undo;
+action_t *action_new()
+{
+  return calloc(1, sizeof(action_t));
+}
 
 /// Creates new shelf
 ///
@@ -117,6 +123,10 @@ void input_existing_item(list_t *shelves)
 void remove_goods(tree_t *tree)
 {
   return;
+}
+
+void undo_action(tree_t *tree, action_t *action)
+{
 }
 
 void add_goods(tree_t *tree)
@@ -313,7 +323,7 @@ bool shelf_exists(tree_t *tree, char *shelf)
   return false;
 }
 
-void edit_goods(tree_t *tree)
+void edit_goods(tree_t *tree, action_t *act)
 {
   char *name = select_goods(tree);
   if(name == NULL)
@@ -323,7 +333,7 @@ void edit_goods(tree_t *tree)
   
   item_t *tmp_item = tree_get(tree, name);
   list_t *shelves = tmp_item->shelves;
-
+  
   char input = ask_question_edit_menu();
      
   switch(input)
