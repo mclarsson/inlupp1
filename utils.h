@@ -36,5 +36,6 @@ void print_menu();
 char ask_question_menu();
 void print_edit_menu();
 char ask_question_edit_menu();
+char ask_question_add();
 
 #endif

@@ -298,16 +298,38 @@ void print_edit_menu()
   fputs("An[t]al\n", stdout);
 }
 
+void print_add_menu()
+{
+  fputs("\n[J]a\n",stdout);
+  fputs("[N]ej\n",stdout);
+  fputs("[R]edigera\n",stdout);
+}
+
 char ask_question_edit_menu()
 {
   print_edit_menu();
 
-  char menu_items[] = "BbPpLlTt";
+  char menu_items[] = "BbPpLlTtAa";
   char c = 'c';
   
   do {
     // Ask for c while c is not in menu_items
-    c = ask_question_char("Välj rad eler [a]vbryt");
+    c = ask_question_char("Välj rad eller [a]vbryt");
+  } while (strchr(menu_items, c) == NULL);
+  
+  return toupper(c);
+}
+
+char ask_question_add()
+{
+  print_add_menu();
+
+  char menu_items[] = "JjNnRr";
+  char c = 'c';
+  
+  do {
+    // Ask for c while c is not in menu_items
+    c = ask_question_char("Välj rad eller [a]vbryt");
   } while (strchr(menu_items, c) == NULL);
   
   return toupper(c);
