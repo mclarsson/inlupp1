@@ -213,6 +213,20 @@ char ask_question_char(char *question)
   return c;
 }
 
+
+/// Asks for char that is in string
+///
+char ask_question_char_in_str(char *question, char *str)
+{
+  char c;
+  
+  do {
+    c = tolower(ask_question_char(question));
+  } while (strchr(str, c) == NULL);
+  
+  return toupper(c);
+}
+
 /**
  
  * print

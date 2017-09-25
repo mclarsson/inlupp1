@@ -83,8 +83,8 @@ item_t *input_item()
   char description[255];
   int price;
 
-  strcpy(description, ask_question_string("Enter description:") );
-  price = ask_question_int("Enter price:");
+  strcpy(description, ask_question_string("Beskrivning:") );
+  price = ask_question_int("Pris:");
   
   return make_item(description, price);
 }
@@ -94,8 +94,8 @@ void input_existing_item(list_t *shelves)
   char shelf[255];
   int amount;
   
-  strcpy(shelf, ask_question_shelf("Enter shelf:") );
-  amount = ask_question_int("Enter amount:");
+  strcpy(shelf, ask_question_shelf("Hylla:") );
+  amount = ask_question_int("Antal:");
 
   for(int i = 0; i < list_length(shelves); i++)
     {
@@ -122,7 +122,7 @@ void remove_goods(tree_t *tree)
 void add_goods(tree_t *tree)
 {
   char name[255];
-  strcpy(name, ask_question_string("Enter name:"));
+  strcpy(name, ask_question_string("Namn:"));
   if(tree_has_key(tree, name))
     {
       puts("Varan finns redan, använder samma beskrivning & pris!");
@@ -163,8 +163,8 @@ char *select_goods(tree_t *tree)
   char *input;
   int current_page = 0;
   char *opt1 = "N";
-  char *opt2 = "P";
-  char *opt3 = "Q";
+  char *opt2 = "F";
+  char *opt3 = "A";
   int input_n;
   int product_size = get_products_n(products);
 
@@ -186,7 +186,7 @@ char *select_goods(tree_t *tree)
 	}
       while(strcmp(input, opt1) != 0 && strcmp(input, opt2) != 0 && strcmp(input, opt3) != 0 && is_number(input) == false)
 	{
-	  input = ask_question_string("\nChoose a product (number)\n[N]ext page\n[P]revious page\n[Q]uit this page");
+	  input = ask_question_string("\nVälj en vara (nummer)\n[N]ästa sida\n[F]örra sidan\n[A]vbryt");
 	}
 	
       if(is_number(input))
@@ -206,7 +206,7 @@ char *select_goods(tree_t *tree)
 	    }
 	  else
 	    {
-	      puts("There is no next page");
+	      puts("Det finns ingen nästa sida");
 	    }
 	}
       else if(strcmp(input, opt2) == 0)
@@ -217,7 +217,7 @@ char *select_goods(tree_t *tree)
 	    }
 	  else
 	    {
-	      puts("There is no previous page");
+	      puts("Det här är första sidan");
 	    }
 	}
       else
@@ -261,7 +261,8 @@ void list_goods(tree_t *tree)
 	}
 
       // Only ask for next page if not all items have been listed
-      if (size == index || ask_question_char("\nSe nästa sida? (y / n)") != 'y')
+      
+      if (size == index || ask_question_char_in_str("\nSe [n]ästa sida eller [a]vbryt ", "na") == 'A')
 	{
 	  view_next = false;
 	}
@@ -278,7 +279,7 @@ void display_goods(tree_t *tree)
   for(int i = 0; i < list_length(shelves); i++)
     {
       shelf_t *tmp_shelf = list_get(shelves, i);
-      printf("Name: %s \nDescription: %s \nPrice : %d \nShelf: %s \nAmount: %d", goods, item->description, item->price, tmp_shelf->name, tmp_shelf->amount);
+      printf("Name: %s \nBeskrivning: %s \nPris : %d \nHylla: %s \nAntal: %d", goods, item->description, item->price, tmp_shelf->name, tmp_shelf->amount);
     }
 }
 

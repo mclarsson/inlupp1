@@ -304,12 +304,12 @@ T *tree_elements(tree_t *tree)
 /// \param elements Array to store elements in.
 /// \param cur_index Current index to store element in array at.
 /// \returns next available index in array.
-int collect_keys(node_t *node, K *elements, int cur_index)
+int collect_keys(node_t *node, K *keys, int cur_index)
 {
   if (node->left == NULL && node->right == NULL)
     {
       // End of branch
-      elements[cur_index] = node->key;
+      keys[cur_index] = node->key;
       return cur_index + 1;
     }
   else
@@ -318,11 +318,11 @@ int collect_keys(node_t *node, K *elements, int cur_index)
       if (node->left != NULL)
 	{
 	  // Collect nodes in left branch first
-	  new_index = collect_keys(node->left, elements, cur_index);
+	  new_index = collect_keys(node->left, keys, cur_index);
 	}
 
       // Add this node after every node on the left branch has been added
-      elements[new_index] = node->key;
+      keys[new_index] = node->key;
       
       if (node->right == NULL)
 	{
@@ -332,7 +332,7 @@ int collect_keys(node_t *node, K *elements, int cur_index)
       else
 	{
 	  // Collect all nodes in right branch before parent node is collected
-	  return collect_keys(node->right, elements, new_index + 1);
+	  return collect_keys(node->right, keys, new_index + 1);
 	}
     }
 }
