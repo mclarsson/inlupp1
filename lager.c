@@ -1,6 +1,7 @@
 
 #include <stdbool.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
 #include "utils.h"
@@ -10,14 +11,14 @@
 
 void exit_program()
 {
-  return;
+  exit(0);
 }
 
 
 // Helper function for adding stuff to catalog
-void populate_catalog(tree_t *catalog)
+void populate_catalog(tree_t *catalog, int size)
 { 
-  for (int i = 0; i < 50; i++)
+  for (int i = 0; i < size; i++)
     {
       // Generate random key
       int name_length = 10;
@@ -40,7 +41,7 @@ int event_loop()
 {
   tree_t *catalog = tree_new();
 
-  populate_catalog(catalog);
+  populate_catalog(catalog, 50);
   
   puts("\n\n\tVälkommen till lagerhantering 1.0");
   puts("\t================================= \n");
@@ -74,7 +75,7 @@ int event_loop()
 	  edit_goods(catalog);
 	  break;
 
-	case 'g':
+	case 'G':
 	  //undo
 	  //undo_action();
 	  break;
@@ -84,6 +85,10 @@ int event_loop()
 	  exit_program();
 	  //return 0;
 	  break;
+
+	default:
+	  fprintf(stdout, "%c är inte ett kommando \n", input);
+	    break;
 	}      
     }
 }

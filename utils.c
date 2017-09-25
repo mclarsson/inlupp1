@@ -127,11 +127,22 @@ answer_t ask_question(char *question, check_func check, convert_func convert)
   int str_size = 255;
   char str[str_size];
   int length = 0;
-  do{
+  bool passed = false;
+
+  do {
     puts(question);
     length = read_string(str, str_size);
+
+    if (check(str))
+      {
+	passed = true;
+      }
+    else
+      {
+	fprintf(stdout, "Felaktig inmatning: %s \n", str);
+      }
     
-  } while(!(check(str) && length > 0));
+  } while(!passed || length == 0);
   
   return convert(str);
     
