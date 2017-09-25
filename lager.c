@@ -83,12 +83,11 @@ int event_loop()
 	case 'A':
 	  // Exit
 	  exit_program();
-	  //return 0;
 	  break;
 
 	default:
 	  fprintf(stdout, "%c är inte ett kommando \n", input);
-	    break;
+	  break;
 	}      
     }
 }
