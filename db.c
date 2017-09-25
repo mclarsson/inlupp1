@@ -82,20 +82,23 @@ item_t *input_item()
 {
   char description[255];
   int price;
+  char shelf[255];
+  int amount;
 
   strcpy(description, ask_question_string("Enter description:") );
   price = ask_question_int("Enter price:");
+
+  item_t *item = make_item(description, price);
+
+  strcpy(shelf, ask_question_shelf("Välj en hylla, den får inte redan användas i systemet"));
+  amount = ask_question_int("Hur många antal av varan finns det?");
+  add_shelf(item, shelf, amount);
   
-  return make_item(description, price);
+  return item;
 }
 
-void input_existing_item(list_t *shelves)
+void input_existing_item(list_t *shelves, char shelf[], int amount)
 {
-  char shelf[255];
-  int amount;
-  
-  strcpy(shelf, ask_question_shelf("Enter shelf:") );
-  amount = ask_question_int("Enter amount:");
 
   for(int i = 0; i < list_length(shelves); i++)
     {
@@ -113,27 +116,138 @@ void input_existing_item(list_t *shelves)
   return;
 }
 
+bool shelf_exists(tree_t *tree, char *shelf)
+{
+  L *products = tree_elements(tree);
+  int i = 0;
+
+  while(true)
+    {
+      if(products[i] != NULL)
+	{
+	  item_t *tmp_item = products[i];
+	  list_t *shelves = tmp_item->shelves;
+	  for(int x = 0; x < list_length(shelves); x++)
+	    {
+	      shelf_t *tmp_shelf = list_get(shelves, x);
+	      if(strcmp(tmp_shelf->name, shelf) == 0)
+		{
+		  return true;
+		}
+	    }
+	  i++;
+	}
+      else
+	{
+	  return false;
+	}
+    }
+  
+  return false;
+}
 
 void remove_goods(tree_t *tree)
 {
   return;
 }
 
+void edit_base_item(tree_t *tree, item_t *item)
+{
+  char input = ask_question_edit_menu();
+  list_t *shelves = item->shelves;
+     
+  switch(input)
+    {	  
+    case 'B':
+      printf("Nuvarande beskrivning: %s\n", item->description);
+      strcpy(item->description, ask_question_string("Vad vill du ändra beskrivningen till?"));
+      break;
+
+    case 'P':
+      printf("Nuvarande pris: %d\n", item->price);
+      item->price = ask_question_int("Vad vill du ändra priset till?");
+      break;
+
+    case 'L':
+      {
+	shelf_t *base_shelf_shelfname = list_first(shelves);
+	printf("Nuvarande lagerhylla: %s \n", base_shelf_shelfname->name);
+	char *tmp_shelf = "Z9999";
+	tmp_shelf = ask_question_shelf("Vad vill du ängra lagerhyllan till? Du får inte välja en som redan finns.");
+	
+	while(shelf_exists(tree, tmp_shelf))
+	  {
+	    tmp_shelf = ask_question_shelf("Vad vill du ängra lagerhyllan till? Du får inte välja en som redan finns.");
+	  }
+	strcpy(base_shelf_shelfname->name, tmp_shelf);
+	break;
+      }
+
+    case 'T':
+      {
+	shelf_t *base_shelf_amount = list_first(shelves);
+	printf("Nuvarande lagerhylla: %s\nNuvarande antal: %d\n", base_shelf_amount->name, base_shelf_amount->amount);
+	int tmp_amount = ask_question_int("Vad vill du ändra antalet till?");
+	base_shelf_amount->amount = tmp_amount;
+	break;
+      }
+
+    case 'A':
+      {
+	return;
+      }
+
+    default:
+      puts("error");
+      break;
+    }
+}
+
 void add_goods(tree_t *tree)
 {
   char name[255];
+  item_t *item;
+  char shelf[255];
+  int amount;
   strcpy(name, ask_question_string("Enter name:"));
   if(tree_has_key(tree, name))
     {
       puts("Varan finns redan, använder samma beskrivning & pris!");
-      item_t *item = tree_get(tree, name);
-      list_t *shelves = item->shelves;
-      input_existing_item(shelves);
+      strcpy(shelf, ask_question_shelf("Vilken hylla ska den ligga på?"));
+      amount = ask_question_int("Hur många varor?");
+      item = tree_get(tree, name);
     }
   else
     {
-      item_t *item = input_item();
-      tree_insert(tree, name, item);
+      item = input_item();
+      //tree_insert(tree, name, item);
+    }
+  while(true)
+    {
+      fputs("Vill du spara varan i databasen?",stdout);
+      char input = ask_question_add();
+
+      switch(input)
+	{
+	case 'J':
+	  if(tree_has_key(tree, name))
+	    {
+	      item = tree_get(tree, name);
+	      list_t *shelves = item->shelves;
+	      input_existing_item(shelves, shelf, amount);
+	    }
+	  else
+	    {
+	      add_shelf(item, shelf, amount);
+	      tree_insert(tree, name, item);
+	    }
+	case 'N':
+	  return;
+	case 'R':
+	  edit_base_item(tree, item);
+	default:
+	  break;
+	}
     }
 }
 
@@ -282,36 +396,6 @@ void display_goods(tree_t *tree)
     }
 }
 
-bool shelf_exists(tree_t *tree, char *shelf)
-{
-  L *products = tree_elements(tree);
-  int i = 0;
-
-  while(true)
-    {
-      if(products[i] != NULL)
-	{
-	  item_t *tmp_item = products[i];
-	  list_t *shelves = tmp_item->shelves;
-	  for(int x = 0; x < list_length(shelves); x++)
-	    {
-	      shelf_t *tmp_shelf = list_get(shelves, x);
-	      if(strcmp(tmp_shelf->name, shelf) == 0)
-		{
-		  return true;
-		}
-	    }
-	  i++;
-	}
-      else
-	{
-	  return false;
-	}
-    }
-  
-  return false;
-}
-
 void edit_goods(tree_t *tree)
 {
   char *name = select_goods(tree);
@@ -365,6 +449,11 @@ void edit_goods(tree_t *tree)
 	    base_shelf_amount->amount = tmp_amount;
 	  }
 	break;
+      }
+
+    case 'A':
+      {
+	return;
       }
 
     default:
