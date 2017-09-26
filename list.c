@@ -130,7 +130,7 @@ bool list_remove(list_t *list, int index, L *elem)
   int size = list_length(list);
   int pos = index < 0 ? index + size - 1 : index;
 
-  if (pos < 0 || pos > size - 1)
+  if (size == 0 || pos < 0 || pos > size - 1)
     {
       // Out of bounds
       return false;
@@ -151,7 +151,8 @@ bool list_remove(list_t *list, int index, L *elem)
       prev->next = rem->next;
     }
 
-  *elem = rem->value;
+  if (elem != NULL) *elem = rem->value;
+  
   free(rem);
   return true;
 }

@@ -41,7 +41,7 @@ void list_goods(tree_t *tree);
 
 // void edit_goods(tree_t *tree)
 
-void edit_goods(tree_t *tree, action_t *act);
+void edit_goods(tree_t *tree, action_t *action);
 
 void remove_goods(tree_t *tree);
 

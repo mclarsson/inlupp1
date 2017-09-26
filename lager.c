@@ -44,8 +44,8 @@ int event_loop()
 
   populate_catalog(catalog, 1);
   
-  puts("\n\n\tVälkommen till lagerhantering 1.0");
-  puts("\t================================= \n");
+  puts("\n\n Välkommen till lagerhantering 1.0");
+  puts(" ================================= \n");
   
   char input;
   
