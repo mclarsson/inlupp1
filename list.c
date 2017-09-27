@@ -150,8 +150,7 @@ bool list_remove(list_t *list, int index, L *elem)
       
       prev->next = rem->next;
     }
-
-  if (elem != NULL) *elem = rem->value;
+  if (elem != NULL) elem = rem->value;
   
   free(rem);
   return true;
