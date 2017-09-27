@@ -51,15 +51,16 @@ action_t *action_new()
 bool shelf_exists(tree_t *tree, char *shelf)
 {
   L *products = tree_elements(tree);
-  int i = 0;
+  int no_products = tree_size(tree);
 
-  while(true)
+  for(int i = 0; i < no_products; i++)
     {
       if(products[i] != NULL)
 	{
 	  item_t *tmp_item = products[i];
 	  list_t *shelves = tmp_item->shelves;
-	  for(int x = 0; x < list_length(shelves); x++)
+	  int shelves_length = list_length(shelves);
+	  for(int x = 0; x < shelves_length; x++)
 	    {
 	      shelf_t *tmp_shelf = list_get(shelves, x);
 	      if(strcmp(tmp_shelf->name, shelf) == 0)
@@ -67,7 +68,6 @@ bool shelf_exists(tree_t *tree, char *shelf)
 		  return true;
 		}
 	    }
-	  i++;
 	}
       else
 	{
@@ -154,7 +154,9 @@ item_t *input_item(tree_t *tree)
     } while(shelf_exists(tree, shelf));
   
   amount = ask_question_int("Hur många antal av varan finns det?");
-  add_shelf(item, shelf, amount);
+
+  shelf_t *new_shelf = make_shelf(shelf, amount);
+  list_append(item->shelves, new_shelf);
   
   return item;
 }
@@ -279,8 +281,7 @@ void add_goods(tree_t *tree)
   else
     {
       item = input_item(tree);
-      //tree_insert(tree, name, item);
-    }
+       }
 
   while(true)
     {
@@ -299,7 +300,6 @@ void add_goods(tree_t *tree)
 	    }
 	  else
 	    {
-	      add_shelf(item, shelf, amount);
 	      tree_insert(tree, name, item);
 	    }
 	case 'N':
