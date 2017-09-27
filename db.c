@@ -190,12 +190,13 @@ void undo_action(tree_t *tree, action_t *action)
       // Copy all old attributes
       action->edited->description = strdup(action->original.description);
       action->edited->price = action->original.price;
+
       // Remove all current shelves 
       while (list_remove(action->edited->shelves, 0, NULL));
-      // Replace with old shelves
       action->edited->shelves = list_new();
-      int shelves_length = list_length(action->original.shelves);
       
+      // Replace with old shelves
+      int shelves_length = list_length(action->original.shelves);
       for (int i = 0; i < shelves_length; i++)
 	{
 	  shelf_t *tmp = list_get(action->original.shelves, i);
@@ -203,8 +204,6 @@ void undo_action(tree_t *tree, action_t *action)
 	  list_append(action->edited->shelves, tmp); 
 	}
     }
-  
-  return;
 }
 
 void edit_base_item(tree_t *tree, item_t *item)
@@ -472,16 +471,16 @@ void edit_goods(tree_t *tree, action_t *action)
 
   // Clear copys shelves
   while (list_remove(action->original.shelves, 0, NULL));
+
   // Copy shelves
   int shelves_length = list_length(shelves);
   for (int i = 0; i < shelves_length; i++)
     {
       shelf_t *tmp = list_get(shelves, i);
-          list_append(action->original.shelves, make_shelf(tmp->name, tmp->amount)); 
+      list_append(action->original.shelves, make_shelf(tmp->name, tmp->amount)); 
     }
   
   char input = ask_question_edit_menu();
-  //print_item(tmp_item, false, name);
   
   switch(input)
     {	  
