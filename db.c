@@ -173,7 +173,7 @@ void undo_action(tree_t *tree, action_t *action)
       // Replace with old shelves
       action->edited->shelves = list_new();
       int shelves_length = list_length(action->original.shelves);
-      shelf_t *tmp;
+      L *tmp;
       for (int i = 0; i < shelves_length; i++)
 	{
 	  list_remove(action->original.shelves, i, tmp);
