@@ -501,13 +501,12 @@ void edit_goods(tree_t *tree, action_t *action)
 	  {
 	    shelf_t *base_shelf_shelfname = list_get(shelves, i);
 	    printf("Nuvarande lagerhylla: %s \n", base_shelf_shelfname->name);
-	    char *tmp_shelf = "Z9999";
-	    tmp_shelf = ask_question_shelf("Vad vill du ängra lagerhyllan till? Du får inte välja en som redan finns.");
+	    char *tmp_shelf;
 	
-	    while(shelf_exists(tree, tmp_shelf))
+	    do
 	      {
 		tmp_shelf = ask_question_shelf("Vad vill du ängra lagerhyllan till? Du får inte välja en som redan finns.");
-	      }
+	      } while(shelf_exists(tree, tmp_shelf) && strcmp(tmp_shelf, base_shelf_shelfname->name));
 	    strcpy(base_shelf_shelfname->name, tmp_shelf);
 	  }
 	break;
