@@ -429,13 +429,61 @@ void list_goods(tree_t *tree)
 	}
 
       // Only ask for next page if not all items have been listed
-      
-      if (size == index || ask_question_char_in_str("\nSe [n]ästa sida eller [a]vbryt ", "na") == 'A')
-	{
-	  view_next = false;
-	}
 
-      ++current_page;
+      // User entered an index between 1-20
+      bool valid_input = false;
+
+      // User entered A or N
+      bool valid_index = false;
+      
+      do {
+	char *input = ask_question_string("\nSe vara [1-20], [n]ästa sida eller [a]vbryt");
+	
+	if (is_number(input))
+	  {
+	    int input_index = atoi(input);
+	    
+	    if (input_index > 0 && input_index <= max)
+	      {
+		int item_index  = (input_index - 1) + (current_page - 1) * page_size;
+		item_t *item = tree_get(tree, items[item_index]);
+
+		printf("Namn: %s \n", items[item_index]);
+		printf("Beskrivning: %s \n", item->description);
+		printf("Pris: %d \n", item->price);
+
+		int shelves_length = list_length(item->shelves);
+		for (int i = 0; i < shelves_length; ++i)
+		  {
+		    shelf_t *s = list_get(item->shelves, i);
+		    printf("Hylla: %s \n", s->name);
+		    printf("Antal: %d \n", s->amount);
+		  }
+
+		valid_index = true;
+
+		// Repeat page
+		index -= max;
+		
+	      }
+	  }
+	else
+	  {
+	    // [a]vbryt 
+	    if (toupper(input[0]) == 'A')
+	      {
+		view_next = false;
+		valid_input = true;
+	      }
+	    // [n]ästa sida
+	    else if (toupper(input[0]) == 'N')
+	      {
+		valid_input = true;
+		++current_page;
+	      }
+	  }
+	
+      } while (valid_input == false && valid_index == false);
     } 
 }
 
