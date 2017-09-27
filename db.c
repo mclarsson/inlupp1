@@ -185,6 +185,10 @@ void remove_goods(tree_t *tree)
   return;
 }
 
+/// Undos latest action, for the moment only edits
+///
+/// \param tree Pointer to tree in which the action is to be undone
+/// \param action Action struct keeping track of what happened previously
 void undo_action(tree_t *tree, action_t *action)
 {
   if (action->type == EDIT)
@@ -311,11 +315,6 @@ void add_goods(tree_t *tree)
 	}
     }
 }
-
-
-//
-// Functions
-//
 
 char *select_goods(tree_t *tree)
 {
