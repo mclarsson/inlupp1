@@ -46,6 +46,55 @@ action_t *action_new()
   return calloc(1, sizeof(action_t));
 }
 
+bool shelf_exists(tree_t *tree, char *shelf)
+{
+  L *products = tree_elements(tree);
+  int i = 0;
+
+  while(true)
+    {
+      if(products[i] != NULL)
+	{
+	  item_t *tmp_item = products[i];
+	  list_t *shelves = tmp_item->shelves;
+	  for(int x = 0; x < list_length(shelves); x++)
+	    {
+	      shelf_t *tmp_shelf = list_get(shelves, x);
+	      if(strcmp(tmp_shelf->name, shelf) == 0)
+		{
+		  return true;
+		}
+	    }
+	  i++;
+	}
+      else
+	{
+	  return false;
+	}
+    }
+  
+  return false;
+}
+
+void print_item(item_t *item, bool newItem, char name[])
+{
+  printf("Namn: %s \nBeskrivning: %s \nPris : %d \n", name, item->description, item->price);
+  list_t *shelves = item->shelves;
+  if(newItem)
+    {
+      shelf_t *shelf = list_last(shelves);
+      printf("Hylla: %s \nAntal: %d\n", shelf->name, shelf->amount);
+    }
+  else
+    {
+      for(int i = 0; i < list_length(shelves); i++)
+	{
+	  shelf_t *tmp_shelf = list_get(shelves, i);
+	  printf("Hylla: %s \nAntal: %d\n", tmp_shelf->name, tmp_shelf->amount);
+	}
+    }
+}
+
 /// Creates new shelf
 ///
 /// \param name Name of shelf (shelf format expected)
@@ -86,7 +135,7 @@ void add_shelf(item_t *item, char *name, int amount)
   list_append(item->shelves, new);
 }
 
-item_t *input_item()
+item_t *input_item(tree_t *tree)
 {
   char description[255];
   int price;
@@ -97,8 +146,11 @@ item_t *input_item()
   price = ask_question_int("Pris:");
   
   item_t *item = make_item(description, price);
-
-  strcpy(shelf, ask_question_shelf("Välj en hylla, den får inte redan användas i systemet"));
+  do
+    {
+      strcpy(shelf, ask_question_shelf("Välj en hylla, den får inte redan användas i systemet"));
+    } while(shelf_exists(tree, shelf));
+  
   amount = ask_question_int("Hur många antal av varan finns det?");
   add_shelf(item, shelf, amount);
   
@@ -122,36 +174,6 @@ void input_existing_item(list_t *shelves, char *shelf, int amount)
   list_append(shelves, &new_shelf);
   
   return;
-}
-
-bool shelf_exists(tree_t *tree, char *shelf)
-{
-  L *products = tree_elements(tree);
-  int i = 0;
-
-  while(true)
-    {
-      if(products[i] != NULL)
-	{
-	  item_t *tmp_item = products[i];
-	  list_t *shelves = tmp_item->shelves;
-	  for(int x = 0; x < list_length(shelves); x++)
-	    {
-	      shelf_t *tmp_shelf = list_get(shelves, x);
-	      if(strcmp(tmp_shelf->name, shelf) == 0)
-		{
-		  return true;
-		}
-	    }
-	  i++;
-	}
-      else
-	{
-	  return false;
-	}
-    }
-  
-  return false;
 }
 
 void remove_goods(tree_t *tree)
@@ -246,18 +268,23 @@ void add_goods(tree_t *tree)
   if(tree_has_key(tree, name))
     {
       puts("Varan finns redan, använder samma beskrivning & pris!");
-      strcpy(shelf, ask_question_shelf("Vilken hylla ska den ligga på?"));
+      do
+	{
+	  strcpy(shelf, ask_question_shelf("Vilken hylla ska den ligga på?"));
+	} while(shelf_exists(tree, shelf));
       amount = ask_question_int("Hur många varor?");
       item = tree_get(tree, name);
       add_shelf(item, shelf, amount);
     }
   else
     {
-      item = input_item();
+      item = input_item(tree);
       //tree_insert(tree, name, item);
     }
+
   while(true)
     {
+      print_item(item, true, name);
       fputs("Vill du spara varan i databasen?",stdout);
       char input = ask_question_add();
 
@@ -461,6 +488,7 @@ void edit_goods(tree_t *tree, action_t *action)
     }
   
   char input = ask_question_edit_menu();
+  //print_item(tmp_item, false, name);
   
   switch(input)
     {	  
