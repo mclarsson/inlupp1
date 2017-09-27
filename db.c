@@ -43,7 +43,9 @@ struct action
 
 action_t *action_new()
 {
-  return calloc(1, sizeof(action_t));
+  action_t *new = calloc(1, sizeof(action_t));
+  new->original.shelves = list_new();
+  return new;
 }
 
 bool shelf_exists(tree_t *tree, char *shelf)
