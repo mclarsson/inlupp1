@@ -318,18 +318,6 @@ void add_goods(tree_t *tree)
 // Functions
 //
 
-int get_products_n(K *products)
-{
-  for(int i = 0; i < INT_MAX; i++)
-    {
-      if(products[i] == NULL)
-	{
-	  return i;
-	}
-    }
-  return 0;
-}
-
 char *select_goods(tree_t *tree)
 {
   //int size = tree_size(tree);
@@ -342,7 +330,7 @@ char *select_goods(tree_t *tree)
   char *opt2 = "F";
   char *opt3 = "A";
   int input_n;
-  int product_size = get_products_n(products);
+  int product_size = tree_size(tree);
 
   while(true)
     {
@@ -351,18 +339,23 @@ char *select_goods(tree_t *tree)
 
       for(int i = 0+(current_page*page_size); i < page_size+(current_page*page_size); i++)
 	{
-	  if(products[i] != NULL)
-	    {
-	      printf("%d %s\n", (i%page_size)+1, products[i]);
-	    }
-	  else
+	  if(products[i] == NULL || i >= product_size)
 	    {
 	      break;
 	    }
+	  else
+	    {
+	      printf("%d %s\n", (i%page_size)+1, products[i]);
+	    }
 	}
+
       while(strcmp(input, opt1) != 0 && strcmp(input, opt2) != 0 && strcmp(input, opt3) != 0 && is_number(input) == false)
 	{
 	  input = ask_question_string("\nVälj en vara (nummer)\n[N]ästa sida\n[F]örra sidan\n[A]vbryt");
+	  if(is_number(input) == false)
+	    {
+	      input[0] = toupper(input[0]);
+	    }
 	}
 	
       if(is_number(input))

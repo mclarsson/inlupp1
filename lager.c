@@ -11,6 +11,7 @@
 
 void exit_program()
 {
+  puts("Avslutar program");
   exit(0);
 }
 
@@ -68,6 +69,7 @@ int event_loop()
 
 	case 'T':
 	  //remove goods
+	  puts("Ej implementerad än");
 	  remove_goods(catalog);
 	  break;
 
