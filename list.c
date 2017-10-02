@@ -137,7 +137,16 @@ bool list_remove(list_t *list, int index, L *elem)
     }
   else if (pos == 0)
     {
-      list->first = list->first->next;
+      // Removing last list item
+      if (size == 1)
+	{
+	  list->first = NULL;
+	  list->last = NULL;
+	}
+      else
+	{
+	  list->first = list->first->next;
+	}
     }
   else
     {
@@ -150,6 +159,7 @@ bool list_remove(list_t *list, int index, L *elem)
       
       prev->next = rem->next;
     }
+  
   if (elem != NULL) elem = rem->value;
   
   free(rem);

@@ -43,7 +43,7 @@ int event_loop()
   tree_t *catalog = tree_new();
   action_t *act = action_new();
 
-  // populate_catalog(catalog, 50);
+  populate_catalog(catalog, 50);
   
   puts("\n\n Välkommen till lagerhantering 1.0");
   puts(" ================================= \n");
@@ -59,7 +59,7 @@ int event_loop()
 	{
 	case 'L':
 	  // Add item
-	  add_goods(catalog);
+	  add_goods(catalog, act);
 	  break;
 
 	case 'H':

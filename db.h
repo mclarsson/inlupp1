@@ -33,7 +33,7 @@ item_t *make_item(char *description, int price);
 /// \param amount Amount of item on shelf
 void add_shelf(item_t *item, char *name, int amount);
 
-void add_goods(tree_t *tree);
+void add_goods(tree_t *tree, action_t *action);
 
 //char *select_goods(tree_t *tree)
 

@@ -260,7 +260,7 @@ T tree_get(tree_t *tree, K key)
 /// \param elements Array to store elements in.
 /// \param cur_index Current index to store element in array at.
 /// \returns next available index in array.
-int collect_elements(node_t *node, T *elements, int cur_index)
+int collect_elements_old(node_t *node, T *elements, int cur_index)
 {
   if (node->left == NULL && node->right == NULL)
     {
@@ -274,7 +274,7 @@ int collect_elements(node_t *node, T *elements, int cur_index)
       if (node->left != NULL)
 	{
 	  // Collect nodes in left branch first
-	  new_index = collect_elements(node->left, elements, cur_index);
+	  new_index = collect_elements_old(node->left, elements, cur_index);
 	}
 
       // Add this node after every node on the left branch has been added
@@ -288,8 +288,29 @@ int collect_elements(node_t *node, T *elements, int cur_index)
       else
 	{
 	  // Collect all nodes in right branch before parent node is collected
-	  return collect_elements(node->right, elements, new_index + 1);
+	  return collect_elements_old(node->right, elements, new_index + 1);
 	}
+    }
+}
+
+void collect_elements(node_t *node, T *elements, int *index)
+{
+  // End of branch
+  if (node->left == NULL && node->right == NULL)
+    {
+      // Increment AFTER this node has been added
+      elements[*index++] = node->element;
+    }
+  else
+    {
+      // Collect nodes in left branch first
+      if (node->left != NULL) collect_elements(node->left, elements, index);
+
+      // Increment AFTER this node has been added
+      elements[*index++] = node->element;
+
+      // Collect all nodes in right branch after parent node is collected
+      if (node->right != NULL) collect_elements(node->right, elements, index);
     }
 }
 
@@ -299,17 +320,28 @@ int collect_elements(node_t *node, T *elements, int cur_index)
 ///
 /// \param tree pointer to the tree
 /// \returns: array of tree_size() elements
+T *tree_elements_old(tree_t *tree)
+{
+  int size = tree_size(tree);
+  T *elements = calloc(size, sizeof(T));
+  if (size > 0)
+    {
+      collect_elements_old(tree->top, elements, 0);
+    }
+  return elements;
+}
+
 T *tree_elements(tree_t *tree)
 {
   int size = tree_size(tree);
   T *elements = calloc(size, sizeof(T));
   if (size > 0)
     {
-      collect_elements(tree->top, elements, 0);
+      int index = 0;
+      collect_elements(tree->top, elements, &index);
     }
   return elements;
 }
-
 
 /// Collects elements in tree in ascending order into array.
 ///

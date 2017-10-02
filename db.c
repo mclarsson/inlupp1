@@ -45,6 +45,7 @@ action_t *action_new()
 {
   action_t *new = calloc(1, sizeof(action_t));
   new->original.shelves = list_new();
+  new->type = NOTHING;
   return new;
 }
 
@@ -199,17 +200,30 @@ void undo_action(tree_t *tree, action_t *action)
 
       // Remove all current shelves 
       while (list_remove(action->edited->shelves, 0, NULL));
-      action->edited->shelves = list_new();
       
-      // Replace with old shelves
       int shelves_length = list_length(action->original.shelves);
-      for (int i = 0; i < shelves_length; i++)
+
+      // Add saved shelves
+      for (int i = 0; i < shelves_length; ++i)
 	{
 	  shelf_t *tmp = list_get(action->original.shelves, i);
-	  list_remove(action->original.shelves, i, NULL);
 	  list_append(action->edited->shelves, tmp); 
 	}
+      
+      // Remove all saved shelves 
+      while (list_remove(action->original.shelves, 0, NULL));
     }
+  else if (action->type == ADD)
+    {
+      puts("Kan inte ångra lägga till");
+    }
+  else if (action->type == NOTHING)
+    {
+      puts("Inget att ångra");
+    }
+  
+  // Prevents multiple regrets
+  action->type = NOTHING;
 }
 
 void edit_base_item(tree_t *tree, item_t *item)
@@ -220,19 +234,19 @@ void edit_base_item(tree_t *tree, item_t *item)
   switch(input)
     {	  
     case 'B':
-      printf("Nuvarande beskrivning: %s\n", item->description);
+      printf("\nNuvarande beskrivning: %s\n", item->description);
       strcpy(item->description, ask_question_string("Vad vill du ändra beskrivningen till?"));
       break;
 
     case 'P':
-      printf("Nuvarande pris: %d\n", item->price);
+      printf("\nNuvarande pris: %d\n", item->price);
       item->price = ask_question_int("Vad vill du ändra priset till?");
       break;
 
     case 'L':
       {
 	shelf_t *base_shelf_shelfname = list_first(shelves);
-	printf("Nuvarande lagerhylla: %s \n", base_shelf_shelfname->name);
+	printf("\nNuvarande lagerhylla: %s \n", base_shelf_shelfname->name);
 	char *tmp_shelf = "Z9999";
 	tmp_shelf = ask_question_shelf("Vad vill du ängra lagerhyllan till? Du får inte välja en som redan finns.");
 	
@@ -247,7 +261,7 @@ void edit_base_item(tree_t *tree, item_t *item)
     case 'T':
       {
 	shelf_t *base_shelf_amount = list_first(shelves);
-	printf("Nuvarande lagerhylla: %s\nNuvarande antal: %d\n", base_shelf_amount->name, base_shelf_amount->amount);
+	printf("\nNuvarande lagerhylla: %s\nNuvarande antal: %d\n", base_shelf_amount->name, base_shelf_amount->amount);
 	int tmp_amount = ask_question_int("Vad vill du ändra antalet till?");
 	base_shelf_amount->amount = tmp_amount;
 	break;
@@ -264,13 +278,16 @@ void edit_base_item(tree_t *tree, item_t *item)
     }
 }
 
-void add_goods(tree_t *tree)
+void add_goods(tree_t *tree, action_t *action)
 {
   char name[255];
   item_t *item;
   char shelf[255];
   int amount;
   strcpy(name, ask_question_string("Namn:"));
+
+  action->type = ADD;
+  
   if(tree_has_key(tree, name))
     {
       puts("Varan finns redan, använder samma beskrivning & pris!");
@@ -447,7 +464,7 @@ void list_goods(tree_t *tree)
 		int item_index  = (input_index - 1) + (current_page - 1) * page_size;
 		item_t *item = tree_get(tree, items[item_index]);
 
-		printf("Namn: %s \n", items[item_index]);
+		printf("\nNamn: %s \n", items[item_index]);
 		printf("Beskrivning: %s \n", item->description);
 		printf("Pris: %d \n", item->price);
 
@@ -456,7 +473,7 @@ void list_goods(tree_t *tree)
 		  {
 		    shelf_t *s = list_get(item->shelves, i);
 		    printf("Hylla: %s \n", s->name);
-		    printf("Antal: %d \n", s->amount);
+		    printf("Antal: %d \n\n", s->amount);
 		  }
 
 		valid_index = true;
@@ -494,7 +511,7 @@ void display_goods(tree_t *tree)
   for(int i = 0; i < list_length(shelves); i++)
     {
       shelf_t *tmp_shelf = list_get(shelves, i);
-      printf("Name: %s \nBeskrivning: %s \nPris : %d \nHylla: %s \nAntal: %d", goods, item->description, item->price, tmp_shelf->name, tmp_shelf->amount);
+      printf("\nName: %s \nBeskrivning: %s \nPris : %d \nHylla: %s \nAntal: %d", goods, item->description, item->price, tmp_shelf->name, tmp_shelf->amount);
     }
 }
 
