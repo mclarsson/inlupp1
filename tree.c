@@ -204,7 +204,7 @@ bool look_for_key(node_t *node, K key)
     }
   else if (node->left != NULL)
     {
-      return look_for_key(node->right, key);
+      return look_for_key(node->left, key);
     }
   else
     {

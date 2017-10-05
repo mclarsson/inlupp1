@@ -461,7 +461,7 @@ void list_goods(tree_t *tree)
 
       // User entered A or N
       bool valid_index = false;
-      
+
       do {
 	char *input = ask_question_string("\nSe vara [1-20], [n]ästa sida eller [a]vbryt");
 	
