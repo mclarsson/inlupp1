@@ -43,7 +43,7 @@ int event_loop()
   tree_t *catalog = tree_new();
   action_t *act = action_new();
 
-  populate_catalog(catalog, 50);
+  //populate_catalog(catalog, 50);
   
   puts("\n\n Välkommen till lagerhantering 1.0");
   puts(" ================================= \n");

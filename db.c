@@ -168,9 +168,9 @@ void input_existing_item(list_t *shelves, char *shelf, int amount)
   for(int i = 0; i < list_length(shelves); i++)
     {
       shelf_t *tmp_shelf = list_get(shelves, i);
-      if(strcmp(tmp_shelf->name, shelf))
+      if(strcmp(tmp_shelf->name, shelf) == 0)
 	{
-	  tmp_shelf->amount += amount;
+	  tmp_shelf->amount = amount;
 	  return;
 	}
     }
@@ -284,6 +284,7 @@ void add_goods(tree_t *tree, action_t *action)
   item_t *item;
   char shelf[255];
   int amount;
+  bool shelfAdded = false;
   strcpy(name, ask_question_string("Namn:"));
 
   action->type = ADD;
@@ -298,18 +299,19 @@ void add_goods(tree_t *tree, action_t *action)
       amount = ask_question_int("Hur många varor?");
       item = tree_get(tree, name);
       add_shelf(item, shelf, amount);
+      shelfAdded = true;
     }
   else
     {
       item = input_item(tree);
-       }
+    }
 
   while(true)
     {
       print_item(item, true, name);
       fputs("Vill du spara varan i databasen?",stdout);
       char input = ask_question_add();
-
+ 
       switch(input)
 	{
 	case 'J':
@@ -323,7 +325,15 @@ void add_goods(tree_t *tree, action_t *action)
 	    {
 	      tree_insert(tree, name, item);
 	    }
+	  return;
 	case 'N':
+	  
+	  if(shelfAdded)
+	    {
+	      list_t *shelves = item->shelves;
+	      list_remove(shelves, list_length(shelves)-1, NULL);
+	    }
+		
 	  return;
 	case 'R':
 	  edit_base_item(tree, item);

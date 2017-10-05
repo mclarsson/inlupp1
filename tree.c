@@ -260,6 +260,7 @@ T tree_get(tree_t *tree, K key)
 /// \param elements Array to store elements in.
 /// \param cur_index Current index to store element in array at.
 /// \returns next available index in array.
+
 int collect_elements_old(node_t *node, T *elements, int cur_index)
 {
   if (node->left == NULL && node->right == NULL)
@@ -320,7 +321,7 @@ void collect_elements(node_t *node, T *elements, int *index)
 ///
 /// \param tree pointer to the tree
 /// \returns: array of tree_size() elements
-T *tree_elements_old(tree_t *tree)
+T *tree_elements(tree_t *tree)
 {
   int size = tree_size(tree);
   T *elements = calloc(size, sizeof(T));
@@ -331,7 +332,7 @@ T *tree_elements_old(tree_t *tree)
   return elements;
 }
 
-T *tree_elements(tree_t *tree)
+T *tree_elements_new(tree_t *tree)
 {
   int size = tree_size(tree);
   T *elements = calloc(size, sizeof(T));
